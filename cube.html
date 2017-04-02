@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>cube</title>
+  <style>
+    html, body { margin:0; padding:0; overflow:hidden; }
+    #controls {
+      border: solid blue 2px;
+      width: 10%;
+      height: 100%;
+      float: left;
+    }
+    canvas {
+      width: 89%;
+      float: left;
+    }
+  </style>
+ </head>
+ <body>
+  <script src="../lib/jquery/2.2.4/jquery.js"></script>
+  <!-- <script src="../lib/jquery/3.1.1/jquery.js"></script> -->
+  <script src="../lib/gl/three/three.js"></script>
+
+
+  <!-- RENDERING SCRIPT -->
+  <script>
+
+    /* SYSTEM CONSTANTS */
+
+    var sin = Math.sin,
+      exp = Math.exp,
+      floor = Math.floor,
+      pi = Math.PI;
+
+
+    /* INTERACTIVE FUNCTIONS */
+
+    function dampedOscillator(a, d, f, p, t){
+      return a * exp(-d * t) * sin((f * pi * t) - p);
+    }
+
+
+    /* SYSTEM PARAMETERS */
+
+    // Frame flags..
+    var flags = {
+      oscCurrYPos: 0.0,
+      oscPrevYPos: -1.0
+    };
+
+    // Initialise time..
+    var time = 0.0;
+    // Incremental constant..
+    var frameRate = 60.0;
+
+    // Adjustable param's..
+    var params = {
+      cube: {
+        size: 1,
+        rotation: 0.04
+      },
+      camera: {
+        args: {
+          fov: 60,
+          aspectWidthFactor: 0.8,
+          near: 0.1,
+          far: 2000.0
+        },
+        pos: {
+          x: 0,
+          y: 0,
+          z: 0
+        }
+      },
+      osc: {
+        damp: 0.15, // Gamma, the damping coefficient
+        amp: 1.0,        // Amplitude, initially
+        freq: 8.0,       // Omega, the angular frequency
+        phase: 0.0
+      },
+      orbit: {
+        size: 1.5,
+        speed: 6.0
+      },
+      cellMargin: 2.0
+    };
+
+    // Slider settings..
+    var sliders = {
+      amp: {
+        min: 0.1,
+        max: 2.0,
+        step: 0.01,
+        val: 1.0
+      },
+      damp: {
+        min: 0.0,
+        max: 10.0,
+        step: 0.01,
+        val: 0.15
+      },
+      freq: {
+        min: 0.2,
+        max: 16.0,
+        step: 0.1,
+        val: 8.0
+      },
+      orbitSpeed: {
+        min: 0.1,
+        max: 40.0,
+        step: 0.1,
+        val: 8.0
+      }
+    };
+
+
+    /* BUILD THE SCENE */
+
+    // Create the main scene graph elements..
+    var scene = new THREE.Scene();
+    var aspect = window.innerWidth * params.camera.args.aspectWidthFactor / window.innerHeight;
+    var camera = new THREE.PerspectiveCamera(75,aspect,0.1,1000);
+    // var camera = new THREE.PerspectiveCamera(params.camera.args.fov, aspect, params.camera.args.near, params.camera.args.far);
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth*0.89, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Define cube geometry..
+    // var geometry = new THREE.BoxGeometry(params.cube.size,params.cube.size,params.cube.size);
+    var geometry = new THREE.BoxGeometry(1,1,1);
+    // Create a mesh..
+    var material = new THREE.MeshNormalMaterial();
+    // Create the cube..
+    var cube = new THREE.Mesh(geometry,material);
+
+    // Add it to the scene..
+    scene.add(cube);
+    // Position the camera..
+    camera.position.z = 5;
+
+
+    /* RENDERING */
+
+    var render = function(){
+        requestAnimationFrame(render);
+        // Rotate the cube..
+        cube.rotation.x += params.cube.rotation;
+        cube.rotation.y += params.cube.rotation;
+        // Give the cube an orbit..
+        cube.position.x = Math.cos(time*params.orbit.speed) * params.orbit.size;
+        cube.position.z = Math.sin(time*params.orbit.speed) * params.orbit.size;
+        // Give the cube a damped oscillation..
+        if ( time > 0.0 && flags.oscPrevYPos !== flags.oscCurrYPos ) {
+          console.log('calculating..');
+          var newPos = dampedOscillator(params.osc.amp, params.osc.damp, params.osc.freq, params.osc.phase, time);
+          cube.position.y = newPos;
+          flags.oscPrevYPos = flags.oscCurrYPos;
+          flags.oscCurrYPos = newPos;
+        }
+
+
+        time += ( 1.0 / frameRate );
+
+        renderer.render(scene,camera);
+    };
+    render();
+  </script>
+
+
+  <!-- CONTROLS -->
+  <div id="controls">
+    <label for="amp">Amplitude:&nbsp;<span id="amp-val-disp"></span></label><input type="range" id="amp" min="" max="" value="" step=""/><br/>
+    <label for="damp">Damping:&nbsp;<span id="damp-val-disp"></span></label><input type="range" id="damp" min="" max="" value="" step=""/><br/>
+    <label for="freq">Frequency:&nbsp;<span id="freq-val-disp"></span></label><input type="range" id="freq" min="" max="" value="" step=""/><br/>
+    <script>
+      // Create event handler..
+      function adjustParamValue(event){
+        // get the goods..
+        var id = event.target.id;
+        var val = $('#'+id).val();
+        // log 'em..
+        console.log("id:"+id+" | val:"+val);
+        // assign value..
+        params[id] = val;
+        $('#'+id+'-val-disp').text(val);
+      }
+      // Set slider param's & attach event handler..
+      // Amplitude..
+      $('#amp').attr({ min: sliders.amp.min, max: sliders.amp.max, step: sliders.amp.step, value: sliders.amp.val });
+      $('#amp-val-disp').text(sliders.amp.val);
+      $('#amp').change(adjustParamValue);
+      // Damping coefficient..
+      $('#damp').attr({ min: sliders.damp.min, max: sliders.damp.max, step: sliders.damp.step, value: sliders.damp.val });
+      $('#damp-val-disp').text(sliders.damp.val);
+      $('#damp').change(adjustParamValue);
+      // Frequency..
+      $('#freq').attr({ min: sliders.freq.min, max: sliders.freq.max, step: sliders.freq.step, value: sliders.freq.val });
+      $('#freq-val-disp').text(sliders.freq.val);
+      $('#freq').change(adjustParamValue);
+    </script>
+  </div>
+
+
+ </body>
+</html>
