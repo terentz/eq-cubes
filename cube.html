@@ -68,7 +68,7 @@
       camera: {
         args: {
           fov: 60,
-          aspectWidthFactor: 0.8,
+          aspectWidthFactor: 0.9,
           near: 0.1,
           far: 2000.0
         },
@@ -128,7 +128,7 @@
     var camera = new THREE.PerspectiveCamera(75,aspect,0.1,1000);
     // var camera = new THREE.PerspectiveCamera(params.camera.args.fov, aspect, params.camera.args.near, params.camera.args.far);
     var renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth*0.89, window.innerHeight);
+    renderer.setSize(window.innerWidth*(params.camera.args.aspectWidthFactor-0.01), window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
     // Define cube geometry..
@@ -157,7 +157,7 @@
         cube.position.z = Math.sin(time*params.orbit.speed) * params.orbit.size;
         // Give the cube a damped oscillation..
         if ( time > 0.0 && flags.oscPrevYPos !== flags.oscCurrYPos ) {
-          console.log('calculating..');
+          // console.log('calculating..');
           var newPos = dampedOscillator(params.osc.amp, params.osc.damp, params.osc.freq, params.osc.phase, time);
           cube.position.y = newPos;
           flags.oscPrevYPos = flags.oscCurrYPos;
@@ -187,7 +187,7 @@
         // log 'em..
         console.log("id:"+id+" | val:"+val);
         // assign value..
-        params[id] = val;
+        params.osc[id] = val;
         $('#'+id+'-val-disp').text(val);
       }
       // Set slider param's & attach event handler..
