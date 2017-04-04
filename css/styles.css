@@ -1,0 +1,17 @@
+html, body {
+  margin:0;
+  padding:0;
+  overflow:hidden;
+}
+
+#controls {
+  border: solid blue 2px;
+  width: 10%;
+  height: 100%;
+  float: left;
+}
+
+canvas {
+  width:89%;
+  float: left;
+}

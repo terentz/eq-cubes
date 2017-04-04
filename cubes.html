@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>cubes</title>
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- LIBRARY IMPORTS -->
+  <script src="../lib/jquery/2.2.4/jquery.js"></script>
+  <!-- <script src="../lib/jquery/3.1.1/jquery.js"></script> -->
+  <script src="../lib/gl/three/three.js"></script>
+
+
+
+
+
+  <!-- todo's -->
+  <!-- TODO separate scripts and styles -->
+  <!-- TODO create trigger for oscillation -->
+  <!-- TODO multiply the cube! -->
+  <!-- TODO oscillate from audio -->
+
+ </head>
+ <body>
+
+  <!-- SCRIPT IMPORTS -->
+  <script src="js/globals.js"></script>
+  <script src="js/physical_functions.js"></script>
+
+  <script src="js/init_renderer.js"></script>
+  <script src="js/build_scene.js"></script>
+  <script src="js/render.js"></script>
+
+  <!-- CONTROLS -->
+  <div id="controls">
+    <!-- Sliders -->
+    <label for="amp">Amplitude:&nbsp;<span id="amp-val-disp"></span></label><input type="range" id="amp" min="" max="" value="" step=""/><br/>
+    <label for="damp">Damping:&nbsp;<span id="damp-val-disp"></span></label><input type="range" id="damp" min="" max="" value="" step=""/><br/>
+    <label for="freq">Frequency:&nbsp;<span id="freq-val-disp"></span></label><input type="range" id="freq" min="" max="" value="" step=""/><br/>
+
+    <!-- Control script -->
+    <script src="js/controls.js"></script>
+  </div>
+
+
+ </body>
+</html>
