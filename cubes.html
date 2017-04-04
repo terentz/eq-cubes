@@ -14,6 +14,7 @@
 
 
   <!-- todo's -->
+  <!-- TODO spiralOut & spiralIn functions (for starting and ending orbits) -->
   <!-- TODO separate scripts and styles -->
   <!-- TODO create trigger for oscillation -->
   <!-- TODO multiply the cube! -->
@@ -33,9 +34,16 @@
   <!-- CONTROLS -->
   <div id="controls">
     <!-- Sliders -->
-    <label for="amp">Amplitude:&nbsp;<span id="amp-val-disp"></span></label><input type="range" id="amp" min="" max="" value="" step=""/><br/>
-    <label for="damp">Damping:&nbsp;<span id="damp-val-disp"></span></label><input type="range" id="damp" min="" max="" value="" step=""/><br/>
-    <label for="freq">Frequency:&nbsp;<span id="freq-val-disp"></span></label><input type="range" id="freq" min="" max="" value="" step=""/><br/>
+    <label for="amp">Amplitude:&nbsp;<span id="amp-val-disp"></span></label><input type="range" id="amp"><br>
+    <label for="damp">Damping:&nbsp;<span id="damp-val-disp"></span></label><input type="range" id="damp"><br>
+    <label for="freq">Frequency:&nbsp;<span id="freq-val-disp"></span></label><input type="range" id="freq"><br>
+    <label for="orbit-speed">Orbit speed:&nbsp;<span id="orbit-speed"></span></label><input type="range" id="orbit-speed"><br>
+    <label for="basic-osc-trigger">Basic oscillation trigger:&nbsp;</label><input type="button" id="basic-osc-trigger"><br>
+
+
+    <audio autoplay="autoplay" controls="none">  
+      <source src="Sordid.mp3" />
+    </audio>
 
     <!-- Control script -->
     <script src="js/controls.js"></script>

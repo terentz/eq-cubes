@@ -10,6 +10,33 @@ var sin = Math.sin,
 
 /* SYSTEM PARAMETERS */
 
+var note = {
+  octave: ,
+  noteName: ,
+  noteIndex: ,
+  frequency: ,
+  wavelength: ,
+  volumePrevFrame: ,
+  valumeCurrFrame: ,
+  oscillating: ,
+  oscType: ,
+
+  oscPrevYPos: ,
+  oscCurrYPos: ,
+
+};
+// A battalion of dancing cubes..
+var noteTable = [
+  [
+
+  ],
+  [
+
+  ],
+
+];
+
+
 // Frame flags..
 var flags = {
   oscCurrYPos: 0.0,
@@ -37,7 +64,7 @@ var params = {
     pos: {
       x: 0,
       y: 0,
-      z: 0
+      z: 5
     }
   },
   osc: {
