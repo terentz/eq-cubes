@@ -1,5 +1,116 @@
 
 
+/* System namespace */
+var eq = {};
+
+eq.octaves : {
+  '-1': [
+    {
+      name : 'C-1',
+      midi : 0,
+      minFreq : ,
+      actFreq : 8.176,
+      maxFreq : ,
+      wavLen :
+    },
+    {
+      name : 'C#-1',
+      midi : 1,
+      minFreq : ,
+      actFreq : 8.662,
+      maxFreq : ,
+      wavLen :
+    },
+    {
+      name : 'D-1',
+      midi : 2,
+      minFreq : ,
+      actFreq : 9.177,
+      maxFreq : ,
+      wavLen :
+    },
+    {
+      name : 'D#-1',
+      midi : 3,
+      minFreq : ,
+      actFreq : 9.723,
+      maxFreq : ,
+      wavLen :
+    },
+    {
+      name : 'E-1',
+      midi : 4,
+      minFreq : ,
+      actFreq : 10.301,
+      maxFreq : ,
+      wavLen :
+    },
+    {
+      name : 'F-1',
+      midi : 5,
+      minFreq : ,
+      actFreq : 10.914,
+      maxFreq : ,
+      wavLen :
+    },
+    {
+      name : 'F#-1',
+      midi : 6,
+      minFreq : ,
+      actFreq : 11.563,
+      maxFreq : ,
+      wavLen :
+    },
+    {
+      name : 'G-1',
+      midi : 7,
+      minFreq : ,
+      actFreq : 12.250,
+      maxFreq : ,
+      wavLen :
+    },
+    {
+      name : 'G#-1',
+      midi : 8,
+      minFreq : ,
+      actFreq : 12.979,
+      maxFreq : ,
+      wavLen :
+    },
+    {
+      name : 'A-1',
+      midi : 9,
+      minFreq : ,
+      actFreq : 13.750,
+      maxFreq : ,
+      wavLen :
+    },
+    {
+      name : 'C-1',
+      midi : 0,
+      minFreq : ,
+      actFreq : 8.176,
+      maxFreq :
+      wavLen :
+    },
+    {
+      name : 'C-1',
+      midi : 0,
+      minFreq : ,
+      actFreq : 8.176,
+      maxFreq :
+      wavLen :
+    },
+  ],
+  '0': [
+
+  ]
+};
+
+eq.Note : function() {
+
+};
+
 /* SYSTEM CONSTANTS */
 
 var sin = Math.sin,

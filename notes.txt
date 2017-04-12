@@ -1,0 +1,4 @@
+Scientific Pitch Notation
+https://en.wikipedia.org/wiki/Scientific_pitch_notation
+
+TODO: derive formula for calculating wavelength from frequency.
