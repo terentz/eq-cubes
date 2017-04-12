@@ -1,0 +1,17 @@
+Scientific Pitch Notation
+https://en.wikipedia.org/wiki/Scientific_pitch_notation
+
+TODO: derive formula for calculating wavelength from frequency.
+
+
+Order of js imports:
+
+#cubes.js
+globals.js
+physical_functions.js
+init_renderer.js
+build_scene.js
+render.js
+
+// in separate div#controls
+controls.js
