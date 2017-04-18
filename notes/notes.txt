@@ -15,3 +15,5 @@ render.js
 
 // in separate div#controls
 controls.js
+
+TODO determine precisely what should determine the damping factor and amplitude 

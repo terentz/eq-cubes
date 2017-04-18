@@ -1,10 +1,12 @@
 // Define cube geometry..
-var csz = params.cube.size;
+var csz = EQK.CUBE.size;
 var geometry = new THREE.BoxGeometry(csz,csz,csz);
 // var geometry = new THREE.BoxGeometry(1,1,1);
 // Create a mesh..
 var material = new THREE.MeshNormalMaterial();
-// Create the cube..
+
+
+// Create the cubes..
 var cube = new THREE.Mesh(geometry,material);
 
 // Add it to the scene..
