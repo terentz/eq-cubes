@@ -8,7 +8,7 @@
   <script src="../lib/jquery/2.2.4/jquery.js"></script>
   <!-- <script src="../lib/jquery/3.1.1/jquery.js"></script> -->
   <script src="../lib/gl/three/three.js"></script>
-  <script src="../lib/immutable/4.0.0-rc2/immutable.js"></script>
+  <!-- <script src="../lib/immutable/4.0.0-rc2/immutable.js"></script> -->
 
 
 
@@ -24,20 +24,21 @@
   <!-- TODO create trigger for oscillation -->
   <!-- TODO multiply the cube! -->
   <!-- TODO oscillate from audio -->
+  <!-- SCRIPT IMPORTS -->
+  <script src="js/namespace.js"></script>
+  <!-- <script src="js/run.js"></script> -->
+  <!-- <script src="js/physical_functions.js"></script>
+  <script src="js/init_renderer.js"></script>
+  <script src="js/build_scene.js"></script> -->
+  <script src="js/render.js"></script>
 
  </head>
  <body>
 
-  <!-- SCRIPT IMPORTS -->
-  <script src="js/globals.js"></script>
-  <script src="js/physical_functions.js"></script>
-  <script src="js/init_renderer.js"></script>
-  <script src="js/build_scene.js"></script>
-  <script src="js/render.js"></script>
 
   <!-- CONTROLS -->
 <!--  <div id="controls">
-    
+
     <label for="amp">Amplitude:&nbsp;<span id="amp-val-disp"></span></label><input type="range" id="amp"><br>
     <label for="damp">Damping:&nbsp;<span id="damp-val-disp"></span></label><input type="range" id="damp"><br>
     <label for="freq">Frequency:&nbsp;<span id="freq-val-disp"></span></label><input type="range" id="freq"><br>
