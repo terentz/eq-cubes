@@ -11,6 +11,7 @@ var EQ = {
       this.msg = _msg;
       this.data = _data;
       this.name = "InvalidArgumentException";
+      console.log(this.name+":"+this.msg+"|"+this.data);
     }
   },
   CONST : {
@@ -104,7 +105,7 @@ var EQ = {
         speed : 6.0
       },
       mesh : {
-        material : EQ.ENUM.MESH_MAT.NORMAL,
+        //material : (function(){ return EQ.ENUM.MESH_MAT.NORMAL; }()), // TODO debug this bizarre error!
         colour : null      // TODO complete this!
       },
       oscillation : {
@@ -141,7 +142,7 @@ var EQ = {
       Object.freeze(this.CAM.arguments.initialView);
       Object.freeze(this.CUBE);
       Object.freeze(this.CUBE.orbit);
-      Object.freeze(this.GRID);
+      // Object.freeze(this.GRID);
     }
   },
   UTILS : {
@@ -180,7 +181,7 @@ var EQ = {
       var _cube = args.cube;
       var _pitch = args.pitch;
       var _mesh = (function(){
-        if ( args.mesh.geo instanceof THREE.Mesh ) {
+        if ( args.mesh.geo !== "undefined" && args.mesh.geo instanceof THREE.Mesh ) {
           return args.mesh;
         } return null;
       })();
@@ -188,19 +189,19 @@ var EQ = {
       var _playing = false;
       var _volume = 0.0;
       var _motion = {
-        orbiting = EQ.DEFS.CUBE.motion.orbiting;
-        rotating = EQ.DEFS.CUBE.motion.rotating;
-        jumping = EQ.DEFS.CUBE.motion.jumping;
-        DHMing = EQ.DEFS.CUBE.motion.DHMing;
-        SHMing = EQ.DEFS.CUBE.motion.SHMing;
+        orbiting : EQ.DEFS.CUBE.motion.orbiting,
+        rotating : EQ.DEFS.CUBE.motion.rotating,
+        jumping : EQ.DEFS.CUBE.motion.jumping,
+        DHMing : EQ.DEFS.CUBE.motion.DHMing,
+        SHMing : EQ.DEFS.CUBE.motion.SHMing
       };
 
       var _lastX = null;
       var _lastY = null;
       var _lastZ = null;
-      var _currX = (function(){})();
-      var _currY = (function(){})();
-      var _currZ = (function(){})();
+      var _currX = (function(){ return null; })();
+      var _currY = (function(){ return null; })();
+      var _currZ = (function(){ return null; })();
 
 
 
@@ -258,34 +259,36 @@ var EQ = {
           }
         },
         // TODO test these and if they work, remove the redundant setters above..
-        increase : function(prop, amt){
-          if ( typeof amt === "number" ) {
-            if ( eval("_"+prop.toString()+'!== "undefined"') ) {
-              if ( eval("_"+prop.toString()+">0.0") ) {
-                if ( amt > 0 ) {
-                  eval("_"+prop.toString()+"+=amt");
-                  return true;
-                } else throw new InvalidArgumentException("'amt' must be greater than zero!",{'amt':amt});
-              } else throw new InvalidArgumentException("The value of property held in 'prop' must be greater than zero!",{"_"+prop.toString():(eval("_"+prop.toString()))});
-            } else throw new InvalidArgumentException("'prop' must be a property of this object!",{'prop':prop});
-          } else throw new InvalidArgumentException("'amt' must be a number!",{'amt':amt});
-          return false;
-        },
-        decrease : function(prop, amt){
-          if ( typeof amt === "number" ) {
-            if ( eval("_"+prop.toString()+'!== "undefined"') ) {
-              if ( eval("_"+prop.toString()+">0.0") ) {
-                if ( amt > 0 ) {
-                  eval("_"+prop.toString()+"+=amt");
-                  if ( eval("_"+prop.toString()+"<0.0") ) eval("_"+prop.toString()+"=0.0");
-                  return true;
-                } else throw new InvalidArgumentException("'amt' must be greater than zero!",{'amt':amt});
-              } else throw new InvalidArgumentException("The value of property held in 'prop' must be greater than zero!",{"_"+prop.toString():(eval("_"+prop.toString()))});
-            } else throw new InvalidArgumentException("'prop' must be a property of this object!",{'prop':prop});
-          } else throw new InvalidArgumentException("'amt' must be a number!",{'amt':amt});
-          return false;
-        },
-
+        // increase : function(prop, amt){
+        //   if ( typeof amt === "number" ) {
+        //     // if ( this[eval(prop.toString())] !== "undefined" ) {
+        //     //   if ( this[eval(prop.toString())) {
+        //     if ( eval("_"+prop.toString()+'!== "undefined"') ) {
+        //       if ( eval("_"+prop.toString()+">0.0") ) {
+        //         if ( amt > 0 ) {
+        //           eval("_"+prop.toString()+"+=amt");
+        //           return true;
+        //         } else throw new InvalidArgumentException("'amt' must be greater than zero!",{'amt':amt});
+        //       } else throw new InvalidArgumentException("The value of property held in 'prop' must be greater than zero!",{"_"+prop.toString():(eval("_"+prop.toString()))});
+        //     } else throw new InvalidArgumentException("'prop' must be a property of this object!",{'prop':prop});
+        //   } else throw new InvalidArgumentException("'amt' must be a number!",{'amt':amt});
+        //   return false;
+        // },
+        // decrease : function(prop, amt){
+        //   if ( typeof amt === "number" ) {
+        //     if ( eval("_"+prop.toString()+'!== "undefined"') ) {
+        //       if ( eval("_"+prop.toString()+">0.0") ) {
+        //         if ( amt > 0 ) {
+        //           eval("_"+prop.toString()+"+=amt");
+        //           if ( eval("_"+prop.toString()+"<0.0") ) eval("_"+prop.toString()+"=0.0");
+        //           return true;
+        //         } else throw new InvalidArgumentException("'amt' must be greater than zero!",{'amt':amt});
+        //       } else throw new InvalidArgumentException("The value of property held in 'prop' must be greater than zero!",{"_"+prop.toString():(eval("_"+prop.toString()))});
+        //     } else throw new InvalidArgumentException("'prop' must be a property of this object!",{'prop':prop});
+        //   } else throw new InvalidArgumentException("'amt' must be a number!",{'amt':amt});
+        //   return false;
+        // },
+        //
         // Oscillation methods
         initSHM : function(){}, // TODO complete this
         initDHM : function(){}, // TODO complete this
@@ -293,176 +296,178 @@ var EQ = {
         updateSHM : function(){},
         updateDHM : function(){},
         stopSHM : function(){},
-        frequency : function(){ return _pitch.frequency; },
+        // frequency : function(){ return _pitch.frequency; },
 
         updateX : function(next){},
         updateY : function(next){},
-        updateZ : function(next){}
-      }
-    },
-    Cube : function(args){
-      /* Main properties */
-      var _position = {
-        x : args.pos.x,
-        y : args.pos.y,
-        z : args.pos.z
+        updateZ : function(next){ return null; }
       };
-      var _orbit = {
-        radius : args.orbit.rad,
-        speed : args.orbit.spd
-      };
-      var _meshColour = args.meshCol;
-      var _meshMaterial = args.meshMat;
-      var _mesh = (function(){ if ( args.mesh instanceof THREE.Mesh ) return args.mesh; })();
-      var _rotation = args.rot;
-      var _size = args.sz;
-
-
-      /* Motion variables */
-      // TODO think about these...
-      var _oscillation;
-      if ( args.osc !== "undefined" ) {
-        _oscillation = {
-          dampening : args.osc.damp,
-          amplitude : args.osc.amp,
-          frequency : args.osc.freq,
-          phase : args.osc.phase
-        };
-      } else {
-        _oscillation = {
-          dampFactor : EQ.DEF.CUBE.oscillation.dampFactor,       // Gamma, the damping coefficient
-          amplitude: EQ.DEF.CUBE.oscillation.amplitude,        // Amplitude, initially
-          frequency: EQ.DEF.CUBE.oscillation.frequency,       // Omega, the angular frequency
-          phase: EQ.DEF.CUBE.oscillation.phase
-        };
-      }
-
-      return {
-        // Getters...
-        mesh : function(){ return _mesh; },
-        meshMat : function(){
-          switch(_mesh.material){
-            case EQ.ENUM.MESH_MAT.NORMAL:
-              return "MeshNormalMaterial";
-            // TODO populate with more of these...
-            default: return null;
-          }
-        },
-        meshCol : function(){ return _mesh.colour; },
-        pos : function(){ return _position; },
-        posX : function(){ return _position.x; },
-        posY : function(){ return _position.y; },
-        posZ : function(){ return _position.z; },
-        orbit : function(){ return _orbit; },
-        orbitRad : function(){ return _orbit.radius; },
-        incOrbRad : function(inc){ if ( inc > 0 ) _orbit.radius += inc; },
-        decOrbRad : function(dec){
-          if ( dec > 0 ) {
-            if ( _orbit.speed > 0.0 ) _orbit.radius -= dec;
-            if ( _orbit.speed < 0.0 ) _orbit.radius = 0.0;
-          }
-        },
-        orbitSpd : function(){ return _orbit.speed; },
-        incOrbSpd : function(inc){ if ( inc > 0 ) _orbit.speed += inc; },
-        decOrbSpd : function(dec){
-          if ( dec > 0 ) {
-            if ( _orbit.speed > 0.0 ) _orbit.speed -= dec;
-            if ( _orbit.speed < 0.0 ) _orbit.speed = 0.0;
-          }
-        },
-        rot : function(){ return _rotation; },
-        incRotate : function(inc){ if ( inc > 0 ) _rotation += inc; },
-        decRotate : function(dec){
-          if ( dec > 0 ) {
-            if ( _rotation > 0.0 ) _rotation -= dec;
-            if ( _rotation < 0.0 ) _rotation = 0.0;
-          }
-        },
-        sz : function(){ return _size; },
-        incSize : function(inc){
-          if ( inc > 0 ) _sz += inc;
-          else throw new InvalidArgumentException("Arg must be greater than zero!");
-        },
-        decSize : function(dec){
-          if ( dec > 0 ) {
-            if ( _size > 0.0 ) _size -= dec;
-            if ( _size < 0.0 ) _size = 0.0;
-          } else {
-            throw new InvalidArgumentException("Arg must be greater than zero!");
-          }
-        },
-        // TODO test these and if they work, remove the redundant setters above..
-        increase : function(prop, amt){
-          if ( typeof amt === "number" ) {
-            if ( eval("_"+prop.toString()+'!== "undefined"') ) {
-              if ( eval("_"+prop.toString()+">0.0") ) {
-                if ( amt > 0 ) {
-                  eval("_"+prop.toString()+"+=amt");
-                  return true;
-                } else throw new InvalidArgumentException("'amt' must be greater than zero!",{'amt':amt});
-              } else throw new InvalidArgumentException("The value of property held in 'prop' must be greater than zero!",{"_"+prop.toString():(eval("_"+prop.toString()))});
-            } else throw new InvalidArgumentException("'prop' must be a property of this object!",{'prop':prop});
-          } else throw new InvalidArgumentException("'amt' must be a number!",{'amt':amt});
-          return false;
-        },
-        decrease : function(prop, amt){
-          if ( typeof amt === "number" ) {
-            if ( eval("_"+prop.toString()+'!== "undefined"') ) {
-              if ( eval("_"+prop.toString()+">0.0") ) {
-                if ( amt > 0 ) {
-                  eval("_"+prop.toString()+"+=amt");
-                  if ( eval("_"+prop.toString()+"<0.0") ) eval("_"+prop.toString()+"=0.0");
-                  return true;
-                } else throw new InvalidArgumentException("'amt' must be greater than zero!",{'amt':amt});
-              } else throw new InvalidArgumentException("The value of property held in 'prop' must be greater than zero!",{"_"+prop.toString():(eval("_"+prop.toString()))});
-            } else throw new InvalidArgumentException("'prop' must be a property of this object!",{'prop':prop});
-          } else throw new InvalidArgumentException("'amt' must be a number!",{'amt':amt});
-          return false;
-        },
-        initSHM : function(){}, // TODO complete this
-        initDHM : function(){}, // TODO complete this
-        update : function(){}   // TODO complete this
-      };
-    },
-    Cube.prototype : {
-      constructor : Cube,
-      toString : function(){
-        return "Pos=("+this.posX()+","+this.posY()+","+this.posZ()+")\n" +
-                "Orbit={radius:"+this.orbitRad()+"|speed:"+this.orbitSpd()+"}\n" +
-                "Mesh="+this.meshMat()+"\n" +
-                "Rotation="+this.rot()+"\n" +
-                "Size="+this.sz()+"\n";
-      }
-    },
-
-    Pitch : function(){
-
-    },
-    Pitch.prototype : {
-
-    },
-
-    Cell : function(){
-
-    },
-    Cell.prototype : {
-
-    },
-
-    Grid : function(){
-
-    },
-    Grid.prototype : {
-
     }
   }
-
 };
-
-EQ.CONST.lockConstants();
-EQ.ENUM.lockEnums();
-EQ.DEF.lockDefaults();
-EQ.UTILS.lockUtils();
+    //*    // Cube : function(args){
+    //   /* Main properties */
+    //   var _position = {
+    //     x : args.pos.x,
+    //     y : args.pos.y,
+    //     z : args.pos.z
+    //   };
+    //   var _orbit = {
+    //     radius : args.orbit.rad,
+    //     speed : args.orbit.spd
+    //   };
+    //   var _meshColour = args.meshCol;
+    //   var _meshMaterial = args.meshMat;
+    //   var _mesh = (function(){ if ( args.mesh instanceof THREE.Mesh ) return args.mesh; })();
+    //   var _rotation = args.rot;
+    //   var _size = args.sz;
+    //
+    //
+    //   /* Motion variables */
+    //   // TODO think about these...
+    //   var _oscillation;
+    //   if ( args.osc !== "undefined" ) {
+    //     _oscillation = {
+    //       dampening : args.osc.damp,
+    //       amplitude : args.osc.amp,
+    //       frequency : args.osc.freq,
+    //       phase : args.osc.phase
+    //     };
+    //   } else {
+    //     _oscillation = {
+    //       dampFactor : EQ.DEF.CUBE.oscillation.dampFactor,       // Gamma, the damping coefficient
+    //       amplitude: EQ.DEF.CUBE.oscillation.amplitude,        // Amplitude, initially
+    //       frequency: EQ.DEF.CUBE.oscillation.frequency,       // Omega, the angular frequency
+    //       phase: EQ.DEF.CUBE.oscillation.phase
+    //     };
+    //   }
+    //
+    //   return {
+    //     // Getters...
+    //     mesh : function(){ return _mesh; },
+    //     meshMat : function(){
+    //       switch(_mesh.material){
+    //         case EQ.ENUM.MESH_MAT.NORMAL:
+    //           return "MeshNormalMaterial";
+    //         // TODO populate with more of these...
+    //         default: return null;
+    //       }
+    //     },
+    //     meshCol : function(){ return _mesh.colour; },
+    //     pos : function(){ return _position; },
+    //     posX : function(){ return _position.x; },
+    //     posY : function(){ return _position.y; },
+    //     posZ : function(){ return _position.z; },
+    //     orbit : function(){ return _orbit; },
+    //     orbitRad : function(){ return _orbit.radius; },
+    //     incOrbRad : function(inc){ if ( inc > 0 ) _orbit.radius += inc; },
+    //     decOrbRad : function(dec){
+    //       if ( dec > 0 ) {
+    //         if ( _orbit.speed > 0.0 ) _orbit.radius -= dec;
+    //         if ( _orbit.speed < 0.0 ) _orbit.radius = 0.0;
+    //       }
+    //     },
+    //     orbitSpd : function(){ return _orbit.speed; },
+    //     incOrbSpd : function(inc){ if ( inc > 0 ) _orbit.speed += inc; },
+    //     decOrbSpd : function(dec){
+    //       if ( dec > 0 ) {
+    //         if ( _orbit.speed > 0.0 ) _orbit.speed -= dec;
+    //         if ( _orbit.speed < 0.0 ) _orbit.speed = 0.0;
+    //       }
+    //     },
+    //     rot : function(){ return _rotation; },
+    //     incRotate : function(inc){ if ( inc > 0 ) _rotation += inc; },
+    //     decRotate : function(dec){
+    //       if ( dec > 0 ) {
+    //         if ( _rotation > 0.0 ) _rotation -= dec;
+    //         if ( _rotation < 0.0 ) _rotation = 0.0;
+    //       }
+    //     },
+    //     sz : function(){ return _size; },
+    //     incSize : function(inc){
+    //       if ( inc > 0 ) _sz += inc;
+    //       else throw new InvalidArgumentException("Arg must be greater than zero!");
+    //     },
+    //     decSize : function(dec){
+    //       if ( dec > 0 ) {
+    //         if ( _size > 0.0 ) _size -= dec;
+    //         if ( _size < 0.0 ) _size = 0.0;
+    //       } else {
+    //         throw new InvalidArgumentException("Arg must be greater than zero!");
+    //       }
+    //     },
+    //     // TODO test these and if they work, remove the redundant setters above..
+    //     increase : function(prop, amt){
+    //       if ( typeof amt === "number" ) {
+    //         if ( eval("_"+prop.toString()+'!== "undefined"') ) {
+    //           if ( eval("_"+prop.toString()+">0.0") ) {
+    //             if ( amt > 0 ) {
+    //               eval("_"+prop.toString()+"+=amt");
+    //               return true;
+    //             } else throw new InvalidArgumentException("'amt' must be greater than zero!",{'amt':amt});
+    //           } else throw new InvalidArgumentException("The value of property held in 'prop' must be greater than zero!",{"_"+prop.toString():(eval("_"+prop.toString()))});
+    //         } else throw new InvalidArgumentException("'prop' must be a property of this object!",{'prop':prop});
+    //       } else throw new InvalidArgumentException("'amt' must be a number!",{'amt':amt});
+    //       return false;
+    //     },
+    //     decrease : function(prop, amt){
+    //       if ( typeof amt === "number" ) {
+    //         if ( eval("_"+prop.toString()+'!== "undefined"') ) {
+    //           if ( eval("_"+prop.toString()+">0.0") ) {
+    //             if ( amt > 0 ) {
+    //               eval("_"+prop.toString()+"+=amt");
+    //               if ( eval("_"+prop.toString()+"<0.0") ) eval("_"+prop.toString()+"=0.0");
+    //               return true;
+    //             } else throw new InvalidArgumentException("'amt' must be greater than zero!",{'amt':amt});
+    //           } else throw new InvalidArgumentException("The value of property held in 'prop' must be greater than zero!",{"_"+prop.toString():(eval("_"+prop.toString()))});
+    //         } else throw new InvalidArgumentException("'prop' must be a property of this object!",{'prop':prop});
+    //       } else throw new InvalidArgumentException("'amt' must be a number!",{'amt':amt});
+    //       return false;
+    //     },
+    //     initSHM : function(){}, // TODO complete this
+    //     initDHM : function(){}, // TODO complete this
+    //     update : function(){}   // TODO complete this
+    //   };
+    // },
+    // Cube.prototype : {
+    //   constructor : Cube,
+    //   toString : function(){
+    //     return "Pos=("+this.posX()+","+this.posY()+","+this.posZ()+")\n" +
+    //             "Orbit={radius:"+this.orbitRad()+"|speed:"+this.orbitSpd()+"}\n" +
+    //             "Mesh="+this.meshMat()+"\n" +
+    //             "Rotation="+this.rot()+"\n" +
+    //             "Size="+this.sz()+"\n";
+    //   }
+    // },
+    //
+    // Pitch : function(){
+    //
+    // },
+    // Pitch.prototype : {
+    //
+    // },
+    //
+    // Cell : function(){
+    //
+    // },
+    // Cell.prototype : {
+    //
+    // },
+    //
+    // Grid : function(){
+    //
+    // },
+    // Grid.prototype : {
+    //
+    // }
+//   }
+//
+// };
+//
+// EQ.CONST.lockConstants();
+// EQ.ENUM.lockEnums();
+// EQ.DEF.lockDefaults();
+// EQ.UTILS.lockUtils();
   // },
 //
 //   CONF : (function(){
