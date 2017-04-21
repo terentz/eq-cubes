@@ -1,15 +1,21 @@
+// TODO replace all Object.freeze() calls with recursive freezes from Immutable.js
+
+
 
 var scene = new THREE.Scene();
 // var EQ = {};
 
 var EQ = {
-  // CONST : {
-  PITCH : {
+  XCPTN : {
+    InvalidArgumentException : function(_msg,_data){
+      this.msg = _msg;
+      this.data = _data;
+      this.name = "InvalidArgumentException";
+    }
+  },
+  CONST : {
     A4 : 440,
     C0 : (function(){ return this.A4*Math.pow(2, -4.75); })(),
-//     // TODO ascertain the better of the following two lines.
-//     // C0 : eqK.A4*Math.pow(2, -4.75),
-//     // QUESTION Do best practices advise that all the properties of a const object be declared in upper- or lowercase?
     notes : ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"],
     octaves : [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
     freqs : [
@@ -34,98 +40,430 @@ var EQ = {
       Object.freeze(this.freqs);
       // delete this.lockConstants;
     }
+  },
+  ENUM : {
+    AXIS : {
+      X : 0,
+      Z : 1
+    },
+    DIR : {  // Enum for the direction in which ascending notes and octaves run.
+      F2B : 0,
+      L2R : 1,
+      B2F : 2,
+      R2L : 3
+    },
+    GRID_PATTERN : {
+      DIAG_SLOPE : 0,
+      ZIGZAG : 1,
+      SPIRAL_IN : 2,
+      SPIRAL_OUT : 3
+    },
+    MESH_MAT : {
+      NORMAL : 0
+    },
+    MOVE : {
+      JUMP : 0,
+      SHM : 1,
+      DHM : 2,
+      ORBIT : 3,
+      SPIN : 4
+    },
+    lockEnums : function(){
+      Object.freeze(this.AXIS);
+      Object.freeze(this.DIR);
+      Object.freeze(this.GRID_PATTERN);
+      Object.freeze(this.MESH_MAT);
+      Object.freeze(this.MOVE);
+    }
+  },
+  DEFS : {  // Defaults
+    CAM : {
+      arguments : {      // TODO group CAMERA.args even further if necessary.
+        fieldOfView : 60.0,   // Field of view
+        aspectWidthFactor : 0.9,    // Aspect Width Factor
+        near : 0.1,
+        far : 2000.0,
+        initialPosition : {
+          x : 0.0,
+          y : 0.0,
+          z : 5.0
+        },
+        initialView : {
+          x : 0.0,
+          y : 0.0,
+          z : 0.0
+        }
+      },
+      framesPerSecond : 60.0
+    },
+    CUBE : {    // Some of the following could just as well be individualised
+      size : 1.0,
+      rotation : 0.04,
+      orbit : {
+        radius : 1.5,
+        speed : 6.0
+      },
+      mesh : {
+        material : EQ.ENUM.MESH_MAT.NORMAL,
+        colour : null      // TODO complete this!
+      },
+      oscillation : {
+        dampeningFactor : 0.15,       // Gamma, the damping coefficient
+        amplitude : 1.0,        // Amplitude, initially
+        frequency : 8.0,       // Omega, the angular frequency
+        phase : 0.0
+      },
+      motion : {
+        jumping : false,
+        orbiting : false,
+        rotating : true,
+        DHMing : false,
+        SHMing : false
+      }
+    },
+    GRID : {
+      spacing : 2.5//,
+      // ascent : {
+      //   notes : null,
+      //   octaves : null
+      // },
+      // // pattern : ENUM.GRID_PATTERN.HILL
+      // firstSquareLocation : {
+      //   x : null,
+      //   y : null,
+      //   z : null
+      // }
+    },
+    lockDefaults : function(){
+      Object.freeze(this.CAM);
+      Object.freeze(this.CAM.arguments);
+      Object.freeze(this.CAM.arguments.initialPosition);
+      Object.freeze(this.CAM.arguments.initialView);
+      Object.freeze(this.CUBE);
+      Object.freeze(this.CUBE.orbit);
+      Object.freeze(this.GRID);
+    }
+  },
+  UTILS : {
+    /* Conversions from frequency to midi or Note object, and from midi to octave, key, or frequency */
+    freq2midi : function(freq){
+      return Math.round(12*Math.log2(freq/EQ.CONST.C0))+12;
+    },
+    midi2octave : function(midi){
+      return Math.floor(midi/12)-1;
+    },
+    midi2key : function(midi){
+      return midi % 12;
+    },
+    midi2freq : function(midi){
+      return EQ.CONST.freqs[midi];
+    },
+    freq2note : function(freq){
+      var _midi = this.freq2midi(freq);
+      return { 'midi': _midi,
+              'octave': this.midi2octave(_midi),
+              'key': this.midi2key(_midi),
+              'freq': this.midi2freq(_midi)
+      };
+    },
+    lockUtils : function(){
+      Object.freeze(this.freq2midi);
+      Object.freeze(this.midi2octave);
+      Object.freeze(this.midi2key);
+      Object.freeze(this.midi2freq);
+      Object.freeze(this.freq2note);
+    }
+  },
+  DOM : {
+    Cell : function(args){
+      var _pos = args.pos;
+      var _cube = args.cube;
+      var _pitch = args.pitch;
+      var _mesh = (function(){
+        if ( args.mesh.geo instanceof THREE.Mesh ) {
+          return args.mesh;
+        } return null;
+      })();
+
+      var _playing = false;
+      var _volume = 0.0;
+      var _motion = {
+        orbiting = EQ.DEFS.CUBE.motion.orbiting;
+        rotating = EQ.DEFS.CUBE.motion.rotating;
+        jumping = EQ.DEFS.CUBE.motion.jumping;
+        DHMing = EQ.DEFS.CUBE.motion.DHMing;
+        SHMing = EQ.DEFS.CUBE.motion.SHMing;
+      };
+
+      var _lastX = null;
+      var _lastY = null;
+      var _lastZ = null;
+      var _currX = (function(){})();
+      var _currY = (function(){})();
+      var _currZ = (function(){})();
+
+
+
+      return {
+        mesh : function(){ return _mesh; },
+        meshMat : function(){
+          switch(_mesh.material){
+            case EQ.ENUM.MESH_MAT.NORMAL:
+              return "MeshNormalMaterial";
+            // TODO populate with more of these...
+            default: return null;
+          }
+        },
+        meshCol : function(){ return _mesh.colour; },
+        pos : function(){ return _position; },
+        posX : function(){ return _position.x; },
+        posY : function(){ return _position.y; },
+        posZ : function(){ return _position.z; },
+        orbit : function(){ return _orbit; },
+        orbitRad : function(){ return _orbit.radius; },
+        incOrbRad : function(inc){ if ( inc > 0 ) _orbit.radius += inc; },
+        decOrbRad : function(dec){
+          if ( dec > 0 ) {
+            if ( _orbit.speed > 0.0 ) _orbit.radius -= dec;
+            if ( _orbit.speed < 0.0 ) _orbit.radius = 0.0;
+          }
+        },
+        orbitSpd : function(){ return _orbit.speed; },
+        incOrbSpd : function(inc){ if ( inc > 0 ) _orbit.speed += inc; },
+        decOrbSpd : function(dec){
+          if ( dec > 0 ) {
+            if ( _orbit.speed > 0.0 ) _orbit.speed -= dec;
+            if ( _orbit.speed < 0.0 ) _orbit.speed = 0.0;
+          }
+        },
+        rot : function(){ return _rotation; },
+        incRotate : function(inc){ if ( inc > 0 ) _rotation += inc; },
+        decRotate : function(dec){
+          if ( dec > 0 ) {
+            if ( _rotation > 0.0 ) _rotation -= dec;
+            if ( _rotation < 0.0 ) _rotation = 0.0;
+          }
+        },
+        sz : function(){ return _size; },
+        incSize : function(inc){
+          if ( inc > 0 ) _sz += inc;
+          else throw new InvalidArgumentException("Arg must be greater than zero!");
+        },
+        decSize : function(dec){
+          if ( dec > 0 ) {
+            if ( _size > 0.0 ) _size -= dec;
+            if ( _size < 0.0 ) _size = 0.0;
+          } else {
+            throw new InvalidArgumentException("Arg must be greater than zero!");
+          }
+        },
+        // TODO test these and if they work, remove the redundant setters above..
+        increase : function(prop, amt){
+          if ( typeof amt === "number" ) {
+            if ( eval("_"+prop.toString()+'!== "undefined"') ) {
+              if ( eval("_"+prop.toString()+">0.0") ) {
+                if ( amt > 0 ) {
+                  eval("_"+prop.toString()+"+=amt");
+                  return true;
+                } else throw new InvalidArgumentException("'amt' must be greater than zero!",{'amt':amt});
+              } else throw new InvalidArgumentException("The value of property held in 'prop' must be greater than zero!",{"_"+prop.toString():(eval("_"+prop.toString()))});
+            } else throw new InvalidArgumentException("'prop' must be a property of this object!",{'prop':prop});
+          } else throw new InvalidArgumentException("'amt' must be a number!",{'amt':amt});
+          return false;
+        },
+        decrease : function(prop, amt){
+          if ( typeof amt === "number" ) {
+            if ( eval("_"+prop.toString()+'!== "undefined"') ) {
+              if ( eval("_"+prop.toString()+">0.0") ) {
+                if ( amt > 0 ) {
+                  eval("_"+prop.toString()+"+=amt");
+                  if ( eval("_"+prop.toString()+"<0.0") ) eval("_"+prop.toString()+"=0.0");
+                  return true;
+                } else throw new InvalidArgumentException("'amt' must be greater than zero!",{'amt':amt});
+              } else throw new InvalidArgumentException("The value of property held in 'prop' must be greater than zero!",{"_"+prop.toString():(eval("_"+prop.toString()))});
+            } else throw new InvalidArgumentException("'prop' must be a property of this object!",{'prop':prop});
+          } else throw new InvalidArgumentException("'amt' must be a number!",{'amt':amt});
+          return false;
+        },
+
+        // Oscillation methods
+        initSHM : function(){}, // TODO complete this
+        initDHM : function(){}, // TODO complete this
+        update : function(){},   // TODO complete this
+        updateSHM : function(){},
+        updateDHM : function(){},
+        stopSHM : function(){},
+        frequency : function(){ return _pitch.frequency; },
+
+        updateX : function(next){},
+        updateY : function(next){},
+        updateZ : function(next){}
+      }
+    },
+    Cube : function(args){
+      /* Main properties */
+      var _position = {
+        x : args.pos.x,
+        y : args.pos.y,
+        z : args.pos.z
+      };
+      var _orbit = {
+        radius : args.orbit.rad,
+        speed : args.orbit.spd
+      };
+      var _meshColour = args.meshCol;
+      var _meshMaterial = args.meshMat;
+      var _mesh = (function(){ if ( args.mesh instanceof THREE.Mesh ) return args.mesh; })();
+      var _rotation = args.rot;
+      var _size = args.sz;
+
+
+      /* Motion variables */
+      // TODO think about these...
+      var _oscillation;
+      if ( args.osc !== "undefined" ) {
+        _oscillation = {
+          dampening : args.osc.damp,
+          amplitude : args.osc.amp,
+          frequency : args.osc.freq,
+          phase : args.osc.phase
+        };
+      } else {
+        _oscillation = {
+          dampFactor : EQ.DEF.CUBE.oscillation.dampFactor,       // Gamma, the damping coefficient
+          amplitude: EQ.DEF.CUBE.oscillation.amplitude,        // Amplitude, initially
+          frequency: EQ.DEF.CUBE.oscillation.frequency,       // Omega, the angular frequency
+          phase: EQ.DEF.CUBE.oscillation.phase
+        };
+      }
+
+      return {
+        // Getters...
+        mesh : function(){ return _mesh; },
+        meshMat : function(){
+          switch(_mesh.material){
+            case EQ.ENUM.MESH_MAT.NORMAL:
+              return "MeshNormalMaterial";
+            // TODO populate with more of these...
+            default: return null;
+          }
+        },
+        meshCol : function(){ return _mesh.colour; },
+        pos : function(){ return _position; },
+        posX : function(){ return _position.x; },
+        posY : function(){ return _position.y; },
+        posZ : function(){ return _position.z; },
+        orbit : function(){ return _orbit; },
+        orbitRad : function(){ return _orbit.radius; },
+        incOrbRad : function(inc){ if ( inc > 0 ) _orbit.radius += inc; },
+        decOrbRad : function(dec){
+          if ( dec > 0 ) {
+            if ( _orbit.speed > 0.0 ) _orbit.radius -= dec;
+            if ( _orbit.speed < 0.0 ) _orbit.radius = 0.0;
+          }
+        },
+        orbitSpd : function(){ return _orbit.speed; },
+        incOrbSpd : function(inc){ if ( inc > 0 ) _orbit.speed += inc; },
+        decOrbSpd : function(dec){
+          if ( dec > 0 ) {
+            if ( _orbit.speed > 0.0 ) _orbit.speed -= dec;
+            if ( _orbit.speed < 0.0 ) _orbit.speed = 0.0;
+          }
+        },
+        rot : function(){ return _rotation; },
+        incRotate : function(inc){ if ( inc > 0 ) _rotation += inc; },
+        decRotate : function(dec){
+          if ( dec > 0 ) {
+            if ( _rotation > 0.0 ) _rotation -= dec;
+            if ( _rotation < 0.0 ) _rotation = 0.0;
+          }
+        },
+        sz : function(){ return _size; },
+        incSize : function(inc){
+          if ( inc > 0 ) _sz += inc;
+          else throw new InvalidArgumentException("Arg must be greater than zero!");
+        },
+        decSize : function(dec){
+          if ( dec > 0 ) {
+            if ( _size > 0.0 ) _size -= dec;
+            if ( _size < 0.0 ) _size = 0.0;
+          } else {
+            throw new InvalidArgumentException("Arg must be greater than zero!");
+          }
+        },
+        // TODO test these and if they work, remove the redundant setters above..
+        increase : function(prop, amt){
+          if ( typeof amt === "number" ) {
+            if ( eval("_"+prop.toString()+'!== "undefined"') ) {
+              if ( eval("_"+prop.toString()+">0.0") ) {
+                if ( amt > 0 ) {
+                  eval("_"+prop.toString()+"+=amt");
+                  return true;
+                } else throw new InvalidArgumentException("'amt' must be greater than zero!",{'amt':amt});
+              } else throw new InvalidArgumentException("The value of property held in 'prop' must be greater than zero!",{"_"+prop.toString():(eval("_"+prop.toString()))});
+            } else throw new InvalidArgumentException("'prop' must be a property of this object!",{'prop':prop});
+          } else throw new InvalidArgumentException("'amt' must be a number!",{'amt':amt});
+          return false;
+        },
+        decrease : function(prop, amt){
+          if ( typeof amt === "number" ) {
+            if ( eval("_"+prop.toString()+'!== "undefined"') ) {
+              if ( eval("_"+prop.toString()+">0.0") ) {
+                if ( amt > 0 ) {
+                  eval("_"+prop.toString()+"+=amt");
+                  if ( eval("_"+prop.toString()+"<0.0") ) eval("_"+prop.toString()+"=0.0");
+                  return true;
+                } else throw new InvalidArgumentException("'amt' must be greater than zero!",{'amt':amt});
+              } else throw new InvalidArgumentException("The value of property held in 'prop' must be greater than zero!",{"_"+prop.toString():(eval("_"+prop.toString()))});
+            } else throw new InvalidArgumentException("'prop' must be a property of this object!",{'prop':prop});
+          } else throw new InvalidArgumentException("'amt' must be a number!",{'amt':amt});
+          return false;
+        },
+        initSHM : function(){}, // TODO complete this
+        initDHM : function(){}, // TODO complete this
+        update : function(){}   // TODO complete this
+      };
+    },
+    Cube.prototype : {
+      constructor : Cube,
+      toString : function(){
+        return "Pos=("+this.posX()+","+this.posY()+","+this.posZ()+")\n" +
+                "Orbit={radius:"+this.orbitRad()+"|speed:"+this.orbitSpd()+"}\n" +
+                "Mesh="+this.meshMat()+"\n" +
+                "Rotation="+this.rot()+"\n" +
+                "Size="+this.sz()+"\n";
+      }
+    },
+
+    Pitch : function(){
+
+    },
+    Pitch.prototype : {
+
+    },
+
+    Cell : function(){
+
+    },
+    Cell.prototype : {
+
+    },
+
+    Grid : function(){
+
+    },
+    Grid.prototype : {
+
+    }
   }
+
 };
+
+EQ.CONST.lockConstants();
+EQ.ENUM.lockEnums();
+EQ.DEF.lockDefaults();
+EQ.UTILS.lockUtils();
   // },
-//
-//   ENUM : {
-//     AXIS : {
-//       X : 0,
-//       Z : 1
-//     },
-//     DIR : {  // Enum for the direction in which ascending notes and octaves run.
-//       F2B : 0,
-//       L2R : 1,
-//       B2F : 2,
-//       R2L : 3
-//     },
-//     GRID_PATTERN : {
-//       SNAKE : 0,
-//       HILL : 1,
-//       SPIRAL_IN : 2,
-//       SPIRAL_OUT :3
-//     },
-//     MESH_MAT : {
-//       NORMAL : 0
-//     },
-//     MOVE : {
-//       JUMP : 0,
-//       SHM : 1,
-//       DHM : 2,
-//       ORBIT : 3,
-//       SPIN : 4
-//     },
-//     lockEnums : function(){
-//       Object.freeze(EQ.ENUM.AXIS);
-//       Object.freeze(EQ.ENUM.DIR);
-//       Object.freeze(EQ.ENUM.GRID_PATTERN);
-//       Object.freeze(EQ.ENUM.MESH_MAT);
-//       Object.freeze(EQ.ENUM.MOVE);
-//       delete EQ.ENUM.lockEnums;
-//     }()
-//   },
-//
-//   DEF : {  // Defaults
-//
-//     CAM : {
-//       arguments : {      // TODO group CAMERA.args even further if necessary.
-//         fieldOfView : 60.0,   // Field of view
-//         aspectWidthFactor : 0.9,    // Aspect Width Factor
-//         near : 0.1,
-//         far : 2000.0,
-//         initialPosition : {
-//           x : 0.0,
-//           y : 0.0,
-//           z : 5.0
-//         },
-//         initialView : {
-//           x : 0.0,
-//           y : 0.0,
-//           z : 0.0
-//         }
-//       },
-//       framesPerSecond : 60.0
-//     },
-//
-//     CUBE : {    // Some of the following could just as well be individualised
-//       size : 1.0,
-//       rotation : 0.04,
-//       orbit : {
-//         radius : 1.5,
-//         speed : 6.0
-//       },
-//       colour : null,       // TODO complete this!
-//       material : EQ.ENUM.MESH_MAT.NORMAL
-//     },
-//
-//     GRID : {
-//       spacing : 2.5,
-//       pattern : EQ.ENUM.GRID_PATTERN.HILL
-//       firstSquareLocation : {
-//         x : null,
-//         y : null,
-//         z : null
-//       }
-//     },
-//
-//     lockDefaults : function() {
-//       Object.freeze(EQ.DEF.CAM);
-//       Object.freeze(EQ.DEF.CUBE);
-//       Object.freeze(EQ.DEF.CUBE.orbit);
-//       Object.freeze(EQ.DEF.GRID);
-//       delete EQ.DEF.lockDefaults;
-//     }()
-//   },
 //
 //   CONF : (function(){
 //     var out = {};
@@ -195,29 +533,6 @@ var EQ = {
 //     stuff : null
 //   },
 //
-//   UTILS : {
-//     /* Conversions from frequency to midi or Note object, and from midi to octave, key, or frequency */
-//     freq2midi : function(freq){
-//       return Math.round(12*Math.log2(freq/EQ.CONST.PITCH.C0))+12;
-//     },
-//     midi2octave : function(midi){
-//       return Math.floor(midi/12)-1;
-//     },
-//     midi2key : function(midi){
-//       return midi % 12;
-//     },
-//     midi2freq : function(midi){
-//       return EQ.CONST.PITCH.freqs1D[midi];
-//     },
-//     freq2note : function(freq){
-//       var _midi = EQ.UTILS.freq2midi(freq);
-//       return { 'midi': _midi,
-//               'octave': EQ.UTILS.midi2octave(_midi),
-//               'key': EQ.UTILS.midi2key(_midi),
-//               'freq': EQ.UTILS.midi2freq(_midi)
-//       };
-//     }
-//   },
 //
 //   NS : {
 //
