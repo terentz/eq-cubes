@@ -54,7 +54,7 @@ var EQ = {
       R2L : 3
     },
     GRID_PATTERN : {
-      DIAG_SLOPE : 0,
+      DIAG_GRAD : 0,
       ZIGZAG : 1,
       SPIRAL_IN : 2,
       SPIRAL_OUT : 3
@@ -165,6 +165,13 @@ var EQ = {
               'octave': this.midi2octave(_midi),
               'key': this.midi2key(_midi),
               'freq': this.midi2freq(_midi)
+      };
+    },
+    midi2note : function(midi){
+      return { 'midi': midi,
+              'octave': this.midi2octave(midi),
+              'key': this.midi2key(midi),
+              'freq': this.midi2freq(midi)
       };
     },
     lockUtils : function(){
@@ -296,15 +303,73 @@ var EQ = {
         updateSHM : function(){},
         updateDHM : function(){},
         stopSHM : function(){},
-        // frequency : function(){ return _pitch.frequency; },
+        frequency : function(){ return _pitch.frequency; },
 
         updateX : function(next){},
         updateY : function(next){},
         updateZ : function(next){ return null; }
       };
+    },
+    // Cell.prototype : {
+    //   constructor : this.Cell
+    // }
+    Grid : function(args){
+      var spacing = EQ.DEFS.GRID.spacing;
+      var span = { x : EQ.CONST.octaves.length, z : EQ.CONST.notes.length };
+      var xHi, xLo, zHi, zLo;
+      var _cells = [];
+      var _arrangement = EQ.ENUM.GRID_PATTERN.DIAG_GRAD;
+      var _midi0;
+      (function(){
+        xHi = (function(){ return (_span.x-1)/2.0*spacing; }());
+        xLo = (-1)*xHi;
+        zHi = (function(){ return (_span.z-1)/2.0*spacing; }());
+        zLo = (-1)*zHi;
+        _midi0.x = xLo;
+        _midi0.y = 0;
+        _midi0.z = zLo;
+        var midi = 0;
+        for ( var iZ=zLo ; iZ<=zHi ; iZ+=spacing ) {
+          for ( var iX=zLo ; iX<=xHi ; iX+=spacing ) {
+            let cube = new THREE.Mesh(geometry,material);
+            scene.add(cube);
+            cube.position.x = iX;
+            cube.position.y = 0;
+            cube.position.z = iZ;
+            let args = {};
+            args.pos = { x : iX, y : 0, z : iZ };
+            args.cube = cube;
+            args.pitch = midi2note(midi);
+            let cell = new EQ.DOM.Cell(args);
+            _cells[midi] = cell;
+          }
+        }
+      })();
     }
+  },
+  SETUP : {
+
   }
 };
+
+/* SETUP */
+EQ.aspect = window.innerWidth * EQ.DEFS.CAM.args.aspectWidthFactor / window.innerHeight;
+let args = EQ.DEFS.CAM.args;
+EQ.camera = new THREE.PerspectiveCamera(
+  args.fieldOfView,
+  args.aspectWidthFactor,
+  args.near,
+  args.far
+);
+EQ.renderer = new THREE.WebGLRenderer();
+EQ.renderer.setSize(window.innerWidth*(args.aspectWidthFactor-0.01), window.innerHeight);
+document.body.appendChild(EQ.renderer.domElement);
+EQ.material = new THREE.MeshNormalMaterial();
+EQ.geometry = new THREE.BoxGeometry(EQ.DEFS.CUBE.size);
+EQ.grid = new EQ.DOM.Grid()
+
+
+
     //*    // Cube : function(args){
     //   /* Main properties */
     //   var _position = {
