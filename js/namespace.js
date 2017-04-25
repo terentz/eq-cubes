@@ -1,12 +1,7 @@
 // TODO replace all Object.freeze() calls with recursive freezes from Immutable.js
 
-// alert("WTF?!");
-// console.log('namespace.js started');
-// var scene = new THREE.Scene();
-// var EQ = {};
-
 var EQ = {
-  // test_1 : (function(){ console.log('in EQ'); })(),
+
   XCPTN : {
     InvalidArgumentException : function(_msg,_data){
       this.msg = _msg;
@@ -15,7 +10,7 @@ var EQ = {
       console.log(this.name+":"+this.msg+"|"+this.data);
     }
   },
-  // test_2 : (function(){ console.log('XCPTN done'); })(),
+
   CONST : {
     A4 : 440,
     C0 : (function(){ return this.A4*Math.pow(2, -4.75); })(),
@@ -44,7 +39,7 @@ var EQ = {
       // delete this.lockConstants;
     }
   },
-  // test_3 : (function(){ console.log('CONST done'); })(),
+
   ENUM : {
     AXIS : {
       X : 0,
@@ -80,7 +75,7 @@ var EQ = {
       Object.freeze(this.MOVE);
     }
   },
-  // test_4 : (function(){ console.log('ENUM done'); })(),
+
   DEFS : {  // Defaults
     CAM : {
       arguments : {      // TODO group CAMERA.args even further if necessary.
@@ -149,7 +144,7 @@ var EQ = {
       // Object.freeze(this.GRID);
     }
   },
-  // test_5 : (function(){ console.log('DEFS done'); })(),
+
   UTILS : {
     /* Conversions from frequency to midi or Note object, and from midi to octave, key, or frequency */
     freq2midi : function(freq){
@@ -187,13 +182,10 @@ var EQ = {
       Object.freeze(this.freq2note);
     }
   },
-  // test_6 : (function(){ console.log('UTILS done'); })(),
-  DOM : {
-    test_7 : (function(){ console.log('in DOM'); })(),
-    Cell : function(args){
 
-      // TODO: remove test line...
-      // console.log('building cell');
+  DOM : {
+
+    Cell : function(args){
 
       var _pos = args.pos;
       var _cube = args.cube;
@@ -220,8 +212,6 @@ var EQ = {
       var _currX = (function(){ return null; })();
       var _currY = (function(){ return null; })();
       var _currZ = (function(){ return null; })();
-
-
 
       return {
         // mesh : function(){ return _mesh; },
@@ -325,11 +315,8 @@ var EQ = {
         }
       };
     },
-    // test_8 : (function(){ console.log('Cell defined'); })(),
-    Grid : function(args){
 
-      // TODO: remove test line...
-      // console.log('building grid');
+    Grid : function(args){
 
       var spacing = EQ.DEFS.GRID.spacing;
       var span = { x : EQ.CONST.octaves.length, z : EQ.CONST.notes.length };
@@ -343,51 +330,23 @@ var EQ = {
         zHi = (function(){ return (span.z-1)/2.0*spacing; }());
         zLo = (-1)*zHi;
 
-        // TODO: remove test line...
+        // TODO: remove test lines...
         console.log('[xLo:'+xLo+',zLo:'+zLo+']');
         console.log('[xHi:'+xHi+',zHi:'+zHi+']');
-
 
         // Iterate through the grid...
         for ( let zi=zLo ; zi<=zHi ; zi+=spacing ) {
           for ( let xi=xLo ; xi<=xHi ; xi+=spacing ) {
-            // Create a cube and add it...
-            // let cArgs = {},
-            //     _pos = { x:xi, y:0, z:zi };
+
             var cube = new THREE.Mesh(args.geo,args.mat);
+            let pos = {};
+
             args.scene.add(cube);
-
-            // Version 1
-            var pos = { x:xi, y:0, z:zi };
-            // 1A...
-            cube.position = pos; // Try creating a small deep copy function perhaps (if the following versions all fail!)
-            // 1B...
-            cube.position.x = pos.x;
-            cube.position.y = pos.y;
-            cube.position.z = pos.z;
-
-
-            // var pos = {};
-            // Version 2
-            // cube.position.x, pos.x = xi;
-            // cube.position.y, pos.y = 0;
-            // cube.position.z, pos.z = zi;
-
-            // Version 3
-            // cube.position.x = (pos.x = xi);
-            // cube.position.y = (pos.y = 0);
-            // cube.position.z = (pos.z = zi);
-
-            // cArgs.pos = _pos;
-            // cArgs.cube = _cube;
-            // cArgs.pitch = midi2note(midi);
-            // _cells[midi] = new EQ.DOM.Cell(cArgs);
-            // OR
-            // _cells[_midi] = new EQ.DOM.Cell({
-
+            cube.position.x = pos.x = xi;
+            cube.position.y = pos.y = 0;
+            cube.position.z = pos.z = zi;
 
             cells.push(new EQ.DOM.Cell({
-            // EQ.DOM.Cell(
               'pos' : pos,
               'cube' : cube,
               'pitch' : (function(){ return EQ.UTILS.midi2note(midi); })()
@@ -402,50 +361,5 @@ var EQ = {
       })();
       return cells;
     }//,
-    // test_9 : (function(){ console.log('Grid defined'); })()
   }
 };
-//
-// var Grid = EQ.DOM.Grid;
-// var frameRate = 60.0;
-// var time = 0.0;
-// let args = EQ.DEFS.CAM.arguments;
-// // let awf = args.aspectWidthFactor;
-// var mag = EQ.DEFS.CUBE.size;
-// console.log('args:'+args);
-// // console.log('awf:'+args);
-//
-// var scene = new THREE.Scene();
-//
-// var aspect = window.innerWidth * args.awf / window.innerHeight;
-// var camera = new THREE.PerspectiveCamera(
-//   args.fov,
-//   aspect,
-//   args.near,
-//   args.far
-// );
-// var renderer = new THREE.WebGLRenderer();
-// renderer.setSize(window.innerWidth*(args.awf-0.01), window.innerHeight);
-// document.body.appendChild(renderer.domElement);
-//
-// // TODO: should these declarations be confined to the domain definition??
-// var geometry = new THREE.BoxGeometry(mag,mag,mag);
-// var material = new THREE.MeshNormalMaterial();
-//
-// var grid = new Grid({ 'scene':scene, 'geo':geometry, 'mat':material });
-//
-//
-//
-// camera.position.z = 40;
-// camera.position.y = 5;
-//
-
-
-
-// var render = function(){
-//     requestAnimationFrame(render);
-//     time += ( 1.0 / frameRate );
-//
-//     renderer.render(scene,camera);
-// };
-// render();
