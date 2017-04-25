@@ -1,11 +1,12 @@
 // TODO replace all Object.freeze() calls with recursive freezes from Immutable.js
 
-
-
-var scene = new THREE.Scene();
+// alert("WTF?!");
+// console.log('namespace.js started');
+// var scene = new THREE.Scene();
 // var EQ = {};
 
 var EQ = {
+  // test_1 : (function(){ console.log('in EQ'); })(),
   XCPTN : {
     InvalidArgumentException : function(_msg,_data){
       this.msg = _msg;
@@ -14,6 +15,7 @@ var EQ = {
       console.log(this.name+":"+this.msg+"|"+this.data);
     }
   },
+  // test_2 : (function(){ console.log('XCPTN done'); })(),
   CONST : {
     A4 : 440,
     C0 : (function(){ return this.A4*Math.pow(2, -4.75); })(),
@@ -42,6 +44,7 @@ var EQ = {
       // delete this.lockConstants;
     }
   },
+  // test_3 : (function(){ console.log('CONST done'); })(),
   ENUM : {
     AXIS : {
       X : 0,
@@ -77,11 +80,12 @@ var EQ = {
       Object.freeze(this.MOVE);
     }
   },
+  // test_4 : (function(){ console.log('ENUM done'); })(),
   DEFS : {  // Defaults
     CAM : {
       arguments : {      // TODO group CAMERA.args even further if necessary.
-        fieldOfView : 60.0,   // Field of view
-        aspectWidthFactor : 0.9,    // Aspect Width Factor
+        fov : 60.0,   // Field of view
+        awf : 0.9,    // Aspect Width Factor
         near : 0.1,
         far : 2000.0,
         initialPosition : {
@@ -145,6 +149,7 @@ var EQ = {
       // Object.freeze(this.GRID);
     }
   },
+  // test_5 : (function(){ console.log('DEFS done'); })(),
   UTILS : {
     /* Conversions from frequency to midi or Note object, and from midi to octave, key, or frequency */
     freq2midi : function(freq){
@@ -160,11 +165,11 @@ var EQ = {
       return EQ.CONST.freqs[midi];
     },
     freq2note : function(freq){
-      var _midi = this.freq2midi(freq);
-      return { 'midi': _midi,
-              'octave': this.midi2octave(_midi),
-              'key': this.midi2key(_midi),
-              'freq': this.midi2freq(_midi)
+      var midi = this.freq2midi(freq);
+      return { 'midi': midi,
+              'octave': this.midi2octave(midi),
+              'key': this.midi2key(midi),
+              'freq': this.midi2freq(midi)
       };
     },
     midi2note : function(midi){
@@ -182,16 +187,22 @@ var EQ = {
       Object.freeze(this.freq2note);
     }
   },
+  // test_6 : (function(){ console.log('UTILS done'); })(),
   DOM : {
+    test_7 : (function(){ console.log('in DOM'); })(),
     Cell : function(args){
+
+      // TODO: remove test line...
+      // console.log('building cell');
+
       var _pos = args.pos;
       var _cube = args.cube;
       var _pitch = args.pitch;
-      var _mesh = (function(){
-        if ( args.mesh.geo !== "undefined" && args.mesh.geo instanceof THREE.Mesh ) {
-          return args.mesh;
-        } return null;
-      })();
+      // var _mesh = (function(){
+      //   if ( args.mesh.geo !== "undefined" && args.mesh.geo instanceof THREE.Mesh ) {
+      //     return args.mesh;
+      //   } return null;
+      // })();
 
       var _playing = false;
       var _volume = 0.0;
@@ -213,58 +224,58 @@ var EQ = {
 
 
       return {
-        mesh : function(){ return _mesh; },
-        meshMat : function(){
-          switch(_mesh.material){
-            case EQ.ENUM.MESH_MAT.NORMAL:
-              return "MeshNormalMaterial";
-            // TODO populate with more of these...
-            default: return null;
-          }
-        },
-        meshCol : function(){ return _mesh.colour; },
-        pos : function(){ return _position; },
-        posX : function(){ return _position.x; },
-        posY : function(){ return _position.y; },
-        posZ : function(){ return _position.z; },
-        orbit : function(){ return _orbit; },
-        orbitRad : function(){ return _orbit.radius; },
-        incOrbRad : function(inc){ if ( inc > 0 ) _orbit.radius += inc; },
-        decOrbRad : function(dec){
-          if ( dec > 0 ) {
-            if ( _orbit.speed > 0.0 ) _orbit.radius -= dec;
-            if ( _orbit.speed < 0.0 ) _orbit.radius = 0.0;
-          }
-        },
-        orbitSpd : function(){ return _orbit.speed; },
-        incOrbSpd : function(inc){ if ( inc > 0 ) _orbit.speed += inc; },
-        decOrbSpd : function(dec){
-          if ( dec > 0 ) {
-            if ( _orbit.speed > 0.0 ) _orbit.speed -= dec;
-            if ( _orbit.speed < 0.0 ) _orbit.speed = 0.0;
-          }
-        },
-        rot : function(){ return _rotation; },
-        incRotate : function(inc){ if ( inc > 0 ) _rotation += inc; },
-        decRotate : function(dec){
-          if ( dec > 0 ) {
-            if ( _rotation > 0.0 ) _rotation -= dec;
-            if ( _rotation < 0.0 ) _rotation = 0.0;
-          }
-        },
-        sz : function(){ return _size; },
-        incSize : function(inc){
-          if ( inc > 0 ) _sz += inc;
-          else throw new InvalidArgumentException("Arg must be greater than zero!");
-        },
-        decSize : function(dec){
-          if ( dec > 0 ) {
-            if ( _size > 0.0 ) _size -= dec;
-            if ( _size < 0.0 ) _size = 0.0;
-          } else {
-            throw new InvalidArgumentException("Arg must be greater than zero!");
-          }
-        },
+        // mesh : function(){ return _mesh; },
+        // meshMat : function(){
+        //   switch(_mesh.material){
+        //     case EQ.ENUM.MESH_MAT.NORMAL:
+        //       return "MeshNormalMaterial";
+        //     // TODO populate with more of these...
+        //     default: return null;
+        //   }
+        // },
+        // meshCol : function(){ return _mesh.colour; },
+        pos : function(){ return _pos; },
+        posX : function(){ return _pos.x; },
+        posY : function(){ return _pos.y; },
+        posZ : function(){ return _pos.z; },
+        // orbit : function(){ return _orbit; },
+        // orbitRad : function(){ return _orbit.radius; },
+        // incOrbRad : function(inc){ if ( inc > 0 ) _orbit.radius += inc; },
+        // decOrbRad : function(dec){
+        //   if ( dec > 0 ) {
+        //     if ( _orbit.speed > 0.0 ) _orbit.radius -= dec;
+        //     if ( _orbit.speed < 0.0 ) _orbit.radius = 0.0;
+        //   }
+        // },
+        // orbitSpd : function(){ return _orbit.speed; },
+        // incOrbSpd : function(inc){ if ( inc > 0 ) _orbit.speed += inc; },
+        // decOrbSpd : function(dec){
+        //   if ( dec > 0 ) {
+        //     if ( _orbit.speed > 0.0 ) _orbit.speed -= dec;
+        //     if ( _orbit.speed < 0.0 ) _orbit.speed = 0.0;
+        //   }
+        // },
+        // rot : function(){ return _rotation; },
+        // incRotate : function(inc){ if ( inc > 0 ) _rotation += inc; },
+        // decRotate : function(dec){
+        //   if ( dec > 0 ) {
+        //     if ( _rotation > 0.0 ) _rotation -= dec;
+        //     if ( _rotation < 0.0 ) _rotation = 0.0;
+        //   }
+        // },
+        // sz : function(){ return _size; },
+        // incSize : function(inc){
+        //   if ( inc > 0 ) _sz += inc;
+        //   else throw new InvalidArgumentException("Arg must be greater than zero!");
+        // },
+        // decSize : function(dec){
+        //   if ( dec > 0 ) {
+        //     if ( _size > 0.0 ) _size -= dec;
+        //     if ( _size < 0.0 ) _size = 0.0;
+        //   } else {
+        //     throw new InvalidArgumentException("Arg must be greater than zero!");
+        //   }
+        // },
         // TODO test these and if they work, remove the redundant setters above..
         // increase : function(prop, amt){
         //   if ( typeof amt === "number" ) {
@@ -297,447 +308,144 @@ var EQ = {
         // },
         //
         // Oscillation methods
-        initSHM : function(){}, // TODO complete this
-        initDHM : function(){}, // TODO complete this
-        update : function(){},   // TODO complete this
-        updateSHM : function(){},
-        updateDHM : function(){},
-        stopSHM : function(){},
-        frequency : function(){ return _pitch.frequency; },
+        // initSHM : function(){}, // TODO complete this
+        // initDHM : function(){}, // TODO complete this
+        // update : function(){},   // TODO complete this
+        // updateSHM : function(){},
+        // updateDHM : function(){},
+        // stopSHM : function(){},
+        // frequency : function(){ return _pitch.frequency; },
 
-        updateX : function(next){},
-        updateY : function(next){},
-        updateZ : function(next){ return null; }
+        // updateX : function(next){},
+        // updateY : function(next){},
+        // updateZ : function(next){ return null; },
+
+        toString : function() {
+          return "pos{"+(_pos.x)+","+(_pos.y).toString()+","+(_pos.z).toString()+"}";
+        }
       };
     },
-    // Cell.prototype : {
-    //   constructor : this.Cell
-    // }
+    // test_8 : (function(){ console.log('Cell defined'); })(),
     Grid : function(args){
+
+      // TODO: remove test line...
+      // console.log('building grid');
+
       var spacing = EQ.DEFS.GRID.spacing;
       var span = { x : EQ.CONST.octaves.length, z : EQ.CONST.notes.length };
       var xHi, xLo, zHi, zLo;
-      var _cells = [];
-      var _arrangement = EQ.ENUM.GRID_PATTERN.DIAG_GRAD;
-      var _midi0;
+      var cells = [];
+      var arrangement = EQ.ENUM.GRID_PATTERN.DIAG_GRAD;
+      var midi = 0;
       (function(){
-        xHi = (function(){ return (_span.x-1)/2.0*spacing; }());
+        xHi = (function(){ return (span.x-1)/2.0*spacing; }());
         xLo = (-1)*xHi;
-        zHi = (function(){ return (_span.z-1)/2.0*spacing; }());
+        zHi = (function(){ return (span.z-1)/2.0*spacing; }());
         zLo = (-1)*zHi;
-        _midi0.x = xLo;
-        _midi0.y = 0;
-        _midi0.z = zLo;
-        var midi = 0;
-        for ( var iZ=zLo ; iZ<=zHi ; iZ+=spacing ) {
-          for ( var iX=zLo ; iX<=xHi ; iX+=spacing ) {
-            let cube = new THREE.Mesh(geometry,material);
-            scene.add(cube);
-            cube.position.x = iX;
-            cube.position.y = 0;
-            cube.position.z = iZ;
-            let args = {};
-            args.pos = { x : iX, y : 0, z : iZ };
-            args.cube = cube;
-            args.pitch = midi2note(midi);
-            let cell = new EQ.DOM.Cell(args);
-            _cells[midi] = cell;
+
+        // TODO: remove test line...
+        console.log('[xLo:'+xLo+',zLo:'+zLo+']');
+        console.log('[xHi:'+xHi+',zHi:'+zHi+']');
+
+
+        // Iterate through the grid...
+        for ( let zi=zLo ; zi<=zHi ; zi+=spacing ) {
+          for ( let xi=xLo ; xi<=xHi ; xi+=spacing ) {
+            // Create a cube and add it...
+            // let cArgs = {},
+            //     _pos = { x:xi, y:0, z:zi };
+            var cube = new THREE.Mesh(args.geo,args.mat);
+            args.scene.add(cube);
+
+            // Version 1
+            var pos = { x:xi, y:0, z:zi };
+            // 1A...
+            cube.position = pos; // Try creating a small deep copy function perhaps (if the following versions all fail!)
+            // 1B...
+            cube.position.x = pos.x;
+            cube.position.y = pos.y;
+            cube.position.z = pos.z;
+
+
+            // var pos = {};
+            // Version 2
+            // cube.position.x, pos.x = xi;
+            // cube.position.y, pos.y = 0;
+            // cube.position.z, pos.z = zi;
+
+            // Version 3
+            // cube.position.x = (pos.x = xi);
+            // cube.position.y = (pos.y = 0);
+            // cube.position.z = (pos.z = zi);
+
+            // cArgs.pos = _pos;
+            // cArgs.cube = _cube;
+            // cArgs.pitch = midi2note(midi);
+            // _cells[midi] = new EQ.DOM.Cell(cArgs);
+            // OR
+            // _cells[_midi] = new EQ.DOM.Cell({
+
+
+            cells.push(new EQ.DOM.Cell({
+            // EQ.DOM.Cell(
+              'pos' : pos,
+              'cube' : cube,
+              'pitch' : (function(){ return EQ.UTILS.midi2note(midi); })()
+            }));
+            // TODO remove this test line..
+            console.log('cells[midi]='+cells[midi].toString());
+            console.log('cube.position='+cube.position.toString());
+
+            midi++;
           }
         }
       })();
-    }
-  },
-  SETUP : {
-
+      return cells;
+    }//,
+    // test_9 : (function(){ console.log('Grid defined'); })()
   }
 };
-
-/* SETUP */
-EQ.aspect = window.innerWidth * EQ.DEFS.CAM.args.aspectWidthFactor / window.innerHeight;
-let args = EQ.DEFS.CAM.args;
-EQ.camera = new THREE.PerspectiveCamera(
-  args.fieldOfView,
-  args.aspectWidthFactor,
-  args.near,
-  args.far
-);
-EQ.renderer = new THREE.WebGLRenderer();
-EQ.renderer.setSize(window.innerWidth*(args.aspectWidthFactor-0.01), window.innerHeight);
-document.body.appendChild(EQ.renderer.domElement);
-EQ.material = new THREE.MeshNormalMaterial();
-EQ.geometry = new THREE.BoxGeometry(EQ.DEFS.CUBE.size);
-EQ.grid = new EQ.DOM.Grid()
-
-
-
-    //*    // Cube : function(args){
-    //   /* Main properties */
-    //   var _position = {
-    //     x : args.pos.x,
-    //     y : args.pos.y,
-    //     z : args.pos.z
-    //   };
-    //   var _orbit = {
-    //     radius : args.orbit.rad,
-    //     speed : args.orbit.spd
-    //   };
-    //   var _meshColour = args.meshCol;
-    //   var _meshMaterial = args.meshMat;
-    //   var _mesh = (function(){ if ( args.mesh instanceof THREE.Mesh ) return args.mesh; })();
-    //   var _rotation = args.rot;
-    //   var _size = args.sz;
-    //
-    //
-    //   /* Motion variables */
-    //   // TODO think about these...
-    //   var _oscillation;
-    //   if ( args.osc !== "undefined" ) {
-    //     _oscillation = {
-    //       dampening : args.osc.damp,
-    //       amplitude : args.osc.amp,
-    //       frequency : args.osc.freq,
-    //       phase : args.osc.phase
-    //     };
-    //   } else {
-    //     _oscillation = {
-    //       dampFactor : EQ.DEF.CUBE.oscillation.dampFactor,       // Gamma, the damping coefficient
-    //       amplitude: EQ.DEF.CUBE.oscillation.amplitude,        // Amplitude, initially
-    //       frequency: EQ.DEF.CUBE.oscillation.frequency,       // Omega, the angular frequency
-    //       phase: EQ.DEF.CUBE.oscillation.phase
-    //     };
-    //   }
-    //
-    //   return {
-    //     // Getters...
-    //     mesh : function(){ return _mesh; },
-    //     meshMat : function(){
-    //       switch(_mesh.material){
-    //         case EQ.ENUM.MESH_MAT.NORMAL:
-    //           return "MeshNormalMaterial";
-    //         // TODO populate with more of these...
-    //         default: return null;
-    //       }
-    //     },
-    //     meshCol : function(){ return _mesh.colour; },
-    //     pos : function(){ return _position; },
-    //     posX : function(){ return _position.x; },
-    //     posY : function(){ return _position.y; },
-    //     posZ : function(){ return _position.z; },
-    //     orbit : function(){ return _orbit; },
-    //     orbitRad : function(){ return _orbit.radius; },
-    //     incOrbRad : function(inc){ if ( inc > 0 ) _orbit.radius += inc; },
-    //     decOrbRad : function(dec){
-    //       if ( dec > 0 ) {
-    //         if ( _orbit.speed > 0.0 ) _orbit.radius -= dec;
-    //         if ( _orbit.speed < 0.0 ) _orbit.radius = 0.0;
-    //       }
-    //     },
-    //     orbitSpd : function(){ return _orbit.speed; },
-    //     incOrbSpd : function(inc){ if ( inc > 0 ) _orbit.speed += inc; },
-    //     decOrbSpd : function(dec){
-    //       if ( dec > 0 ) {
-    //         if ( _orbit.speed > 0.0 ) _orbit.speed -= dec;
-    //         if ( _orbit.speed < 0.0 ) _orbit.speed = 0.0;
-    //       }
-    //     },
-    //     rot : function(){ return _rotation; },
-    //     incRotate : function(inc){ if ( inc > 0 ) _rotation += inc; },
-    //     decRotate : function(dec){
-    //       if ( dec > 0 ) {
-    //         if ( _rotation > 0.0 ) _rotation -= dec;
-    //         if ( _rotation < 0.0 ) _rotation = 0.0;
-    //       }
-    //     },
-    //     sz : function(){ return _size; },
-    //     incSize : function(inc){
-    //       if ( inc > 0 ) _sz += inc;
-    //       else throw new InvalidArgumentException("Arg must be greater than zero!");
-    //     },
-    //     decSize : function(dec){
-    //       if ( dec > 0 ) {
-    //         if ( _size > 0.0 ) _size -= dec;
-    //         if ( _size < 0.0 ) _size = 0.0;
-    //       } else {
-    //         throw new InvalidArgumentException("Arg must be greater than zero!");
-    //       }
-    //     },
-    //     // TODO test these and if they work, remove the redundant setters above..
-    //     increase : function(prop, amt){
-    //       if ( typeof amt === "number" ) {
-    //         if ( eval("_"+prop.toString()+'!== "undefined"') ) {
-    //           if ( eval("_"+prop.toString()+">0.0") ) {
-    //             if ( amt > 0 ) {
-    //               eval("_"+prop.toString()+"+=amt");
-    //               return true;
-    //             } else throw new InvalidArgumentException("'amt' must be greater than zero!",{'amt':amt});
-    //           } else throw new InvalidArgumentException("The value of property held in 'prop' must be greater than zero!",{"_"+prop.toString():(eval("_"+prop.toString()))});
-    //         } else throw new InvalidArgumentException("'prop' must be a property of this object!",{'prop':prop});
-    //       } else throw new InvalidArgumentException("'amt' must be a number!",{'amt':amt});
-    //       return false;
-    //     },
-    //     decrease : function(prop, amt){
-    //       if ( typeof amt === "number" ) {
-    //         if ( eval("_"+prop.toString()+'!== "undefined"') ) {
-    //           if ( eval("_"+prop.toString()+">0.0") ) {
-    //             if ( amt > 0 ) {
-    //               eval("_"+prop.toString()+"+=amt");
-    //               if ( eval("_"+prop.toString()+"<0.0") ) eval("_"+prop.toString()+"=0.0");
-    //               return true;
-    //             } else throw new InvalidArgumentException("'amt' must be greater than zero!",{'amt':amt});
-    //           } else throw new InvalidArgumentException("The value of property held in 'prop' must be greater than zero!",{"_"+prop.toString():(eval("_"+prop.toString()))});
-    //         } else throw new InvalidArgumentException("'prop' must be a property of this object!",{'prop':prop});
-    //       } else throw new InvalidArgumentException("'amt' must be a number!",{'amt':amt});
-    //       return false;
-    //     },
-    //     initSHM : function(){}, // TODO complete this
-    //     initDHM : function(){}, // TODO complete this
-    //     update : function(){}   // TODO complete this
-    //   };
-    // },
-    // Cube.prototype : {
-    //   constructor : Cube,
-    //   toString : function(){
-    //     return "Pos=("+this.posX()+","+this.posY()+","+this.posZ()+")\n" +
-    //             "Orbit={radius:"+this.orbitRad()+"|speed:"+this.orbitSpd()+"}\n" +
-    //             "Mesh="+this.meshMat()+"\n" +
-    //             "Rotation="+this.rot()+"\n" +
-    //             "Size="+this.sz()+"\n";
-    //   }
-    // },
-    //
-    // Pitch : function(){
-    //
-    // },
-    // Pitch.prototype : {
-    //
-    // },
-    //
-    // Cell : function(){
-    //
-    // },
-    // Cell.prototype : {
-    //
-    // },
-    //
-    // Grid : function(){
-    //
-    // },
-    // Grid.prototype : {
-    //
-    // }
-//   }
 //
-// };
+// var Grid = EQ.DOM.Grid;
+// var frameRate = 60.0;
+// var time = 0.0;
+// let args = EQ.DEFS.CAM.arguments;
+// // let awf = args.aspectWidthFactor;
+// var mag = EQ.DEFS.CUBE.size;
+// console.log('args:'+args);
+// // console.log('awf:'+args);
 //
-// EQ.CONST.lockConstants();
-// EQ.ENUM.lockEnums();
-// EQ.DEF.lockDefaults();
-// EQ.UTILS.lockUtils();
-  // },
+// var scene = new THREE.Scene();
 //
-//   CONF : (function(){
-//     var out = {};
-//     /*
-//     set:
-//     -fps
-//     -GRID.ascending.notes
-//     -GRID.ascending.octvs
-//     -GRID.cellSize
-//
-//     .. a bit of user interactivity anyhow...
-//     */
-//
-//     if ( out === "undefined" ||
-//           out === null ||
-//           Object.values(out).length === 0 ) {
-//       return {  // DEFAULTS ALL RIGHT HERE!!
-//         ascending: {
-//           notes: EQ.ENUM.DIR.R2L,
-//           octaves: EQ.ENUM.DIR.F2B
-//         },
-//         camera: {
-//           fps : (function(){ return EQ.DEF.CAM.framesPerSecond; }()),
-//           args : {      // TODO group CAMERA.args even further if necessary.
-//             fov : (function(){ return EQ.DEF.CAM.arguments.fov; }()),   // Field of view
-//             awf : (function(){ return EQ.DEF.CAM.arguments.awf; }()),    // Aspect Width Factor
-//             near : (function(){ return EQ.DEF.CAM.arguments.near; }()),
-//             far : (function(){ return EQ.DEF.CAM.arguments.far; }())
-//           },
-//           initPos : {     // Camera's initial position
-//             x : (function(){ return EQ.DEF.CAM.arguments.initialPosition.x; }()),
-//             y : (function(){ return EQ.DEF.CAM.arguments.initialPosition.y; }()),
-//             z : (function(){ return EQ.DEF.CAM.arguments.initialPosition.z; }())
-//           },
-//           initView : {     // A point colinear with the camera's centre of view
-//             x : (function(){ return EQ.DEF.CAM.arguments.initialView.x; }()),
-//             y : (function(){ return EQ.DEF.CAM.arguments.initialView.y; }()),
-//             z : (function(){ return EQ.DEF.CAM.arguments.initialView.z; }())
-//           }
-//         },
-//         cube: {
-//           sz : (function(){ return EQ.DEF.CUBE.size; }()),
-//           rot : (function(){ return EQ.DEF.CUBE.rotation; }()),
-//           orb : {
-//             rad :(function(){ return EQ.DEF.CUBE.orbit.radius; }()),
-//             spd : (function(){ return EQ.DEF.CUBE.orbit.speed; }())
-//           },
-//           col : (function(){ return EQ.DEF.CUBE.colour; }()),
-//           mat : (function(){ return EQ.DEF.CUBE.material; }())
-//         },
-//         grid: {
-//           spc : (function(){ return EQ.DEF.GRID.spacing; }()),
-//           ptrn : (function(){ return EQ.DEF.GRID.pattern; }()),
-//           size : {
-//             x : null,
-//             z : null
-//           },
-//           midi0pos : (function(){ return EQ.DEF.GRID.firstSquareLocation; }())
-//         }
-//       };
-//     } // end if
-//     return out;
-//   })(),
-//
-//
-//   FLAGS : {
-//     stuff : null
-//   },
-//
-//
-//   NS : {
-//
-//     Pitch : function(args){
-//       if ( typeof args == "number" ) {  // A single numeric arg
-//         var n = EQ.UTILS.freq2note(args);
-//         var _midi = n.midi;
-//         var _octave = n.octave;
-//         var _key = n.key;
-//         var _freq = n.freq;
-//         var _wavLen = n.wavLen;
-//         delete n;
-//       } else if ( typeof args == "object" && args.length == 4 ) { // An object, 4 props
-//         var _midi = args['midi'];
-//         var _octave = args['octave'];
-//         var _key = args['key'];
-//         var _freq = args['freq'];
-//         // var _wavLen = args['wavLen'];
-//       } else {
-//         throw new Exception(e) { // TODO implement this exception with a little more elegance!
-//           console.log("Note constructor received a non-object or non-numeric argument");
-//           console.log(e);
-//           return null;
-//         }
-//       }
-//       delete args;
-//
-//       // Getters..
-//       var _getMidi = function(){ return _midi; };
-//       var _getOctave = function(){ return _octave; };
-//       var _getKey = function(){ return _key; };
-//       var _getFreq = function(){ return _freq; };
-//       var _getNote = function(){ return _key+(_octave).toString(); };
-//
-//       return {
-//         midi : _getMidi,
-//         octave : _getOctave,
-//         octaveStr : (_getOctave).toString(),
-//         key : _getKey,
-//         freq : _getFreq,
-//         note : _getNote
-//       };
-//     },
-//     Pitch.prototype : {
-//       constructor: EQ.NS.Pitch,
-//       toString: function(){ return "["+this.midi().toString()+"]: "+this.name()+"("+this.freq().toString()+")"; }
-//     },
-//
-//     Cube : function(args){
-//       var _pos = {
-//         x : args.position.x,
-//         y : args.position.y,
-//         z : args.position.z
-//       };
-//       var _sz = args.size;
-//       var _rot = args.rotation;
-//       var _orb = {
-//         rad : args.orbit.radius,
-//         spd : args.orbit.speed
-//       };
-//       var _col = args.mesh.colour;
-//       var _mat = args.mesh.material;
-//       // var _activity;
-//       return {
-//         size : function(){ return _sz; },
-//         rotation : function(){ return _rot; },
-//         position : function(){ return _pos; },
-//         orbit : function(){ return _orb; },
-//         colour : function(){ return _col; },
-//         material : function(){ return _mat; }
-//       };
-//     },
-//     Cube.prototype : {
-//       constructor: EQ.NS.Cube,
-//       toString: function(){ return ""; }
-//     },
-//
-//     Cell : function(args){
-//       var _cube = args.cube;
-//       var _pitch = args.pitch;
-//       // var _audible = false;
-//       var _volume = 0.0;
-//
-//       return {
-//         cube : function(){ return _cube; },
-//         pitch : function(){ return _pitch; },
-//         audible : function(arg){ arg === "undefined" ? return _audible : _audible = arg ; },
-//         volume : function(arg){ arg === "undefined" ? return _volume : _volume = arg ; },
-//         volUp : function(arg){ _volume += arg; },
-//         volDown : function(arg){ if ( _volume>0 ) { _volume -= arg; if ( _volume<0 ) { _volume=0; } } else { return false; }}
-//       };
-//       // var cube = function
-//       // var pitch = function(){ return _pitch; };
-//     },
-//     Cell.prototype : {
-//       constructor: EQ.NS.Cell,
-//       toString: function(){ return ""; }
-//     },
-//
-//     Grid : (function(){
-//       var out = {};
-//       out.midiArr = [];
-//       var midi = 0;
-//       for ( var iZ=0 ; iZ<11 ; iZ++ ) {
-//         for ( var iX=0 ; iX<12 ; iX++ ) {
-//           let c = new EQ.NS.Cube({ position : {x:iX,y:0,z:iZ},
-//             size : EQ.CONST.CUBE.size,
-//             rotation : EQ.CONST.CUBE.rot,
-//             mesh : { colour : null, material : EQ.ENUM.MESH_MAT.NORMAL }
-//           });
-//           var geometry = new THREE.BoxGeometry(c.size,c.size,c.size);
-//           var material = new THREE.MeshNormalMaterial();
-//           var mesh = new THREE.Mesh(geometry,material);
-//           scene.add(cube);
-//           let p = new EQ.NS.Pitch(EQ.CONST.PITCH.freqs[midi]);
-//           Object.freeze(p);
-//           out.arr[midi] = new EQ.NS.Cell({ cube:c, pitch:p });
-//         }
-//       }
-//       return out;
-//
-//
-//     }),
-//     Grid.prototype : {
-//       constructor : EQ.NS.Grid
-//     },
-//     time : 0.0
-//   }
-// };
-// // Object.freeze(EQ.NS);
-//
-// var grid = new EQ.NS.Grid();
-//
-// var aspect = window.innerWidth * EQ.DEF.CAM.aspectWidthFactor;
-// var camera = new THREE.PerspectiveCamera(75,aspect,EQ.DEF.CAM.near,EQ.DEF.CAM.far);
+// var aspect = window.innerWidth * args.awf / window.innerHeight;
+// var camera = new THREE.PerspectiveCamera(
+//   args.fov,
+//   aspect,
+//   args.near,
+//   args.far
+// );
 // var renderer = new THREE.WebGLRenderer();
-// renderer.setSize(window.innerWidth*(EQ.DEF.CAM.aspectWidthFactor-0.01), window.innerHeight);
+// renderer.setSize(window.innerWidth*(args.awf-0.01), window.innerHeight);
 // document.body.appendChild(renderer.domElement);
+//
+// // TODO: should these declarations be confined to the domain definition??
+// var geometry = new THREE.BoxGeometry(mag,mag,mag);
+// var material = new THREE.MeshNormalMaterial();
+//
+// var grid = new Grid({ 'scene':scene, 'geo':geometry, 'mat':material });
+//
+//
+//
+// camera.position.z = 40;
+// camera.position.y = 5;
+//
+
+
+
+// var render = function(){
+//     requestAnimationFrame(render);
+//     time += ( 1.0 / frameRate );
+//
+//     renderer.render(scene,camera);
+// };
+// render();
