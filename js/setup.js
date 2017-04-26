@@ -2,7 +2,7 @@
 /* SETUP */
 // aliases..
 
-var Grid = EQ.DOM.Grid;
+// var Grid = EQ.DOM.Grid;
 var frameRate = 60.0;
 var time = 0.0;
 let args = EQ.DEFS.CAM.arguments;
@@ -28,7 +28,8 @@ document.body.appendChild(renderer.domElement);
 var geometry = new THREE.BoxGeometry(mag,mag,mag);
 var material = new THREE.MeshNormalMaterial();
 
-var grid = new Grid({ 'scene':scene, 'geo':geometry, 'mat':material });
+try{ var grid = new EQ.DOM.Grid({ 'scene':scene, 'geo':geometry, 'mat':material }); }
+catch(e) { console.log('init of "grid" did NOT WORK!!!'; )}
 
 
 
