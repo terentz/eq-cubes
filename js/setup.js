@@ -28,10 +28,12 @@ document.body.appendChild(renderer.domElement);
 var geometry = new THREE.BoxGeometry(mag,mag,mag);
 var material = new THREE.MeshNormalMaterial();
 
-try{ var grid = new EQ.DOM.Grid({ 'scene':scene, 'geo':geometry, 'mat':material }); }
-catch(e) { console.log('init of "grid" did NOT WORK!!!'; )}
+var grid = new EQ.DOM.Grid({ 'scene':scene, 'geo':geometry, 'mat':material });
 
+// try{ var grid = new EQ.DOM.Grid({ 'scene':scene, 'geo':geometry, 'mat':material }); }
+// catch(e) { console.log('init of "grid" did NOT WORK!!!'); }
 
+// console.log('grid:{'+grid.toString()+'}');
 
 camera.position.z = 40;
 camera.position.y = 5;

@@ -233,10 +233,10 @@ EQ.DOM.Cell = function(args){
     //   }
     // },
     // meshCol : function(){ return _mesh.colour; },
-    pos : function(){ return _pos; },
-    posX : function(){ return _pos.x; },
-    posY : function(){ return _pos.y; },
-    posZ : function(){ return _pos.z; },
+    pos : function(){ return pos; },
+    posX : function(){ return pos.x; },
+    posY : function(){ return pos.y; },
+    posZ : function(){ return pos.z; },
     // orbit : function(){ return _orbit; },
     // orbitRad : function(){ return _orbit.radius; },
     // incOrbRad : function(inc){ if ( inc > 0 ) _orbit.radius += inc; },
@@ -320,7 +320,7 @@ EQ.DOM.Cell = function(args){
     // updateZ : function(next){ return null; },
 
     toString : function() {
-      return "pos{"+(_pos.x)+","+(_pos.y).toString()+","+(_pos.z).toString()+"}";
+      return "pos{"+(pos.x)+","+(pos.y).toString()+","+(pos.z).toString()+"}";
     }
   }
 };
@@ -378,17 +378,28 @@ EQ.DOM.Grid = function(args){
   })();
   return cells;
 };
-EQ.DOM.Grid.prototype = {
-  // Grid.prototype = {
-  constructor : EQ.DOM.Grid,
-  test : function(){
-    console.log("this is a test");
-    return "this is a test";
-  }(),
-  rotateAll : function(tuple){
-    // TODO: this function may need multithreading!!
-    for ( let m = 0 ; m < cells.length ; m++ ) {
-      (cells[m]).rotate(tuple);
-    }
+// EQ.DOM.Grid.prototype = {
+//   // Grid.prototype = {
+//   constructor : EQ.DOM.Grid,
+//   test : function test(){
+//     console.log("this is a test from the non-existent grid!");
+//     return "this is a test";
+//   },
+//   rotateAll : function rotateAll(tuple){
+//     // TODO: this function may need multithreading!!
+//     for ( let m = 0 ; m < cells.length ; m++ ) {
+//       (cells[m]).rotate(tuple);
+//     }
+//   }
+// };
+EQ.DOM.Grid.prototype.constructor = EQ.DOM.Grid;
+EQ.DOM.Grid.prototype.test = function(){
+  console.log("this is a test from the non-existent grid!");
+  return "this is a test";
+};
+EQ.DOM.Grid.prototype.rotateAll = function(tuple){
+  // TODO: this function may need multithreading!!
+  for ( let m = 0 ; m < cells.length ; m++ ) {
+    (cells[m]).rotate(tuple);
   }
 };
