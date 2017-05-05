@@ -322,7 +322,7 @@ EQ.DOM.Cell = function(args){
     toString : function() {
       return "pos{"+(pos.x)+","+(pos.y).toString()+","+(pos.z).toString()+"}";
     }
-  }
+  };
 };
 EQ.DOM.Cell.prototype = {
   constructor : EQ.DOM.Cell,
@@ -338,24 +338,26 @@ EQ.DOM.Cell.prototype = {
   }
 };
 
-EQ.DOM.Grid = function(args){
+EQ.DOM.Grid = (function(args){
 
   var spacing = EQ.DEFS.GRID.spacing;
   var span = { x : EQ.CONST.octaves.length, z : EQ.CONST.notes.length };
   var xHi, xLo, zHi, zLo;
-  var cells = [];
+  var _cells = [];
   var arrangement = EQ.ENUM.GRID_PATTERN.DIAG_GRAD;
   var midi = 0;
 
-  (function(){
-    xHi = (function(){ return (span.x-1)/2.0*spacing; }());
-    xLo = (-1)*xHi;
-    zHi = (function(){ return (span.z-1)/2.0*spacing; }());
-    zLo = (-1)*zHi;
+  // (function(){
+  var xHi = (function(){ return (span.x-1)/2.0*spacing; }());
+  var xLo = (-1)*xHi;
+  var zHi = (function(){ return (span.z-1)/2.0*spacing; }());
+  var zLo = (-1)*zHi;
 
+  var _buildCells = function(xMin,xMax,zMin,zMax){
+    var cellArr = [];
     // Iterate through the grid...
-    for ( let zi=zLo ; zi<=zHi ; zi+=spacing ) {
-      for ( let xi=xLo ; xi<=xHi ; xi+=spacing ) {
+    for ( let zi=zMin ; zi<=zMax ; zi+=spacing ) {
+      for ( let xi=xMin ; xi<=xMax ; xi+=spacing ) {
 
         var cube = new THREE.Mesh(args.geo,args.mat);
         let pos = {};
@@ -366,7 +368,7 @@ EQ.DOM.Grid = function(args){
         cube.position.y = pos.y = 0;
         cube.position.z = pos.z = zi;
 
-        cells.push(new EQ.DOM.Cell({
+        cellArr.push(new EQ.DOM.Cell({
           'pos' : pos,
           'cube' : cube,
           // 'pitch' : (function(){ return EQ.UTILS.midi2note(midi); })()
@@ -375,9 +377,76 @@ EQ.DOM.Grid = function(args){
         midi++;
       }
     }
-  })();
-  return cells;
-};
+    return cellArr;
+  };
+
+  Grid = {
+    buildCells : function(){
+      _cells = _buildCells()
+    },
+    rotateAll : function(tuple){
+      for ( let m = 0 ; m < cells.length ; m++ ) {
+        (cells[m]).rotate(tuple);
+      }
+    },
+    toString : function(){
+
+    }
+  };
+}());
+
+//   this.rotateAll = function(tuple){
+//     // TODO: this function may need multithreading!!
+//     for ( let m = 0 ; m < cells.length ; m++ ) {
+//       (cells[m]).rotate(tuple);
+//     }
+//   };
+//
+//
+//
+//   return cells;
+// };
+
+// EQ.DOM.Grid = function(args){
+//
+//   var spacing = EQ.DEFS.GRID.spacing;
+//   var span = { x : EQ.CONST.octaves.length, z : EQ.CONST.notes.length };
+//   var xHi, xLo, zHi, zLo;
+//   var cells = [];
+//   var arrangement = EQ.ENUM.GRID_PATTERN.DIAG_GRAD;
+//   var midi = 0;
+//
+//   (function(){
+//     xHi = (function(){ return (span.x-1)/2.0*spacing; }());
+//     xLo = (-1)*xHi;
+//     zHi = (function(){ return (span.z-1)/2.0*spacing; }());
+//     zLo = (-1)*zHi;
+//
+//     // Iterate through the grid...
+//     for ( let zi=zLo ; zi<=zHi ; zi+=spacing ) {
+//       for ( let xi=xLo ; xi<=xHi ; xi+=spacing ) {
+//
+//         var cube = new THREE.Mesh(args.geo,args.mat);
+//         let pos = {};
+//
+//         // Add and position..
+//         args.scene.add(cube);
+//         cube.position.x = pos.x = xi;
+//         cube.position.y = pos.y = 0;
+//         cube.position.z = pos.z = zi;
+//
+//         cells.push(new EQ.DOM.Cell({
+//           'pos' : pos,
+//           'cube' : cube,
+//           // 'pitch' : (function(){ return EQ.UTILS.midi2note(midi); })()
+//           'pitch' : (function(){ return EQ.UTILS.midi2note(midi); })
+//         }));
+//         midi++;
+//       }
+//     }
+//   })();
+//   return cells;
+// };
 // EQ.DOM.Grid.prototype = {
 //   // Grid.prototype = {
 //   constructor : EQ.DOM.Grid,

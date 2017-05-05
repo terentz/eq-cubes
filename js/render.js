@@ -17,8 +17,8 @@ var render = function(){
     requestAnimationFrame(render);
 
     /* UPDATE DRAWING HERE */
-    grid.prototype.test();
-    grid.prototype.rotateAll(rotTuple);
+    // grid.prototype.test();
+    grid.rotateAll(rotTuple);
 
     /* UPDATE FLAGS HERE */
     time += ( 1.0 / frameRate );
