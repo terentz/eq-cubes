@@ -28,7 +28,9 @@ document.body.appendChild(renderer.domElement);
 var geometry = new THREE.BoxGeometry(mag,mag,mag);
 var material = new THREE.MeshNormalMaterial();
 
-var grid = new EQ.DOM.Grid({ 'scene':scene, 'geo':geometry, 'mat':material });
+var grid = new EQ.OBD.Grid({ 'scene':scene, 'geo':geometry, 'mat':material });
+// var grid = Grid({ 'scene':scene, 'geo':geometry, 'mat':material });
+grid.toString();
 
 // try{ var grid = new EQ.DOM.Grid({ 'scene':scene, 'geo':geometry, 'mat':material }); }
 // catch(e) { console.log('init of "grid" did NOT WORK!!!'); }

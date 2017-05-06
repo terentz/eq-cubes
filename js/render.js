@@ -18,7 +18,7 @@ var render = function(){
 
     /* UPDATE DRAWING HERE */
     // grid.prototype.test();
-    grid.rotateAll(rotTuple);
+    grid.updateCells(rotTuple);
 
     /* UPDATE FLAGS HERE */
     time += ( 1.0 / frameRate );

@@ -186,7 +186,7 @@ var EQ = {
 
 
 
-EQ.DOM = {  /* OBJECT DOMAIN DEFINITION */  };
+EQ.OBD = {  /* OBJECT DOMAIN DEFINITION */  };
 
 /**
  * The Cell class is instantiated once for each cube, accounting for
@@ -200,7 +200,7 @@ EQ.DOM = {  /* OBJECT DOMAIN DEFINITION */  };
  *                                          -> note {string}
  *                                          -> frequency {float}
  */
-EQ.DOM.Cell = function(args){
+EQ.OBD.Cell = function(args){
   var pos = args.pos;
   var cube = args.cube;
   var pitch = args.pitch;
@@ -237,6 +237,11 @@ EQ.DOM.Cell = function(args){
     posX : function(){ return pos.x; },
     posY : function(){ return pos.y; },
     posZ : function(){ return pos.z; },
+    rotate : function(tuple){
+      cube.rotation.x += tuple.x;
+      cube.rotation.y += tuple.y;
+      cube.rotation.z += tuple.z;
+    },
     // orbit : function(){ return _orbit; },
     // orbitRad : function(){ return _orbit.radius; },
     // incOrbRad : function(inc){ if ( inc > 0 ) _orbit.radius += inc; },
@@ -314,7 +319,6 @@ EQ.DOM.Cell = function(args){
     // updateDHM : function(){},
     // stopSHM : function(){},
     // frequency : function(){ return _pitch.frequency; },
-
     // updateX : function(next){},
     // updateY : function(next){},
     // updateZ : function(next){ return null; },
@@ -324,8 +328,8 @@ EQ.DOM.Cell = function(args){
     }
   };
 };
-EQ.DOM.Cell.prototype = {
-  constructor : EQ.DOM.Cell,
+EQ.OBD.Cell.prototype = {
+  constructor : EQ.OBD.Cell,
   position : function(args){
     cube.position.x = args.x;
     cube.position.y = args.y;
@@ -338,137 +342,67 @@ EQ.DOM.Cell.prototype = {
   }
 };
 
-EQ.DOM.Grid = (function(args){
+
+EQ.OBD.Grid = (function(args){
 
   var spacing = EQ.DEFS.GRID.spacing;
   var span = { x : EQ.CONST.octaves.length, z : EQ.CONST.notes.length };
   var xHi, xLo, zHi, zLo;
-  var _cells = [];
+  var cells = [];
   var arrangement = EQ.ENUM.GRID_PATTERN.DIAG_GRAD;
+  // buildCells(args);
+
   var midi = 0;
+  xHi = (function(){ return (span.x-1)/2.0*spacing; }());
+  xLo = (-1)*xHi;
+  zHi = (function(){ return (span.z-1)/2.0*spacing; }());
+  zLo = (-1)*zHi;
 
-  // (function(){
-  var xHi = (function(){ return (span.x-1)/2.0*spacing; }());
-  var xLo = (-1)*xHi;
-  var zHi = (function(){ return (span.z-1)/2.0*spacing; }());
-  var zLo = (-1)*zHi;
 
-  var _buildCells = function(xMin,xMax,zMin,zMax){
-    var cellArr = [];
-    // Iterate through the grid...
-    for ( let zi=zMin ; zi<=zMax ; zi+=spacing ) {
-      for ( let xi=xMin ; xi<=xMax ; xi+=spacing ) {
+  // Iterate through the grid...
+  for ( let zi=zLo ; zi<=zHi ; zi+=spacing ) {
+    for ( let xi=xLo ; xi<=xHi ; xi+=spacing ) {
 
-        var cube = new THREE.Mesh(args.geo,args.mat);
-        let pos = {};
+      var cube = new THREE.Mesh(args.geo,args.mat);
+      let pos = {};
 
-        // Add and position..
-        args.scene.add(cube);
-        cube.position.x = pos.x = xi;
-        cube.position.y = pos.y = 0;
-        cube.position.z = pos.z = zi;
+      // Add and position..
+      args.scene.add(cube);
+      cube.position.x = pos.x = xi;
+      cube.position.y = pos.y = 0;
+      cube.position.z = pos.z = zi;
 
-        cellArr.push(new EQ.DOM.Cell({
-          'pos' : pos,
-          'cube' : cube,
-          // 'pitch' : (function(){ return EQ.UTILS.midi2note(midi); })()
-          'pitch' : (function(){ return EQ.UTILS.midi2note(midi); })
-        }));
-        midi++;
-      }
+      cells.push(new EQ.OBD.Cell({
+        'pos' : pos,
+        'cube' : cube,
+        // 'pitch' : (function(){ return EQ.UTILS.midi2note(midi); })()
+        'pitch' : (function(){ return EQ.UTILS.midi2note(midi); })
+      }));
+      midi++;
     }
-    return cellArr;
-  };
+  }
+  delete midi;
 
-  Grid = {
-    buildCells : function(){
-      _cells = _buildCells()
-    },
-    rotateAll : function(tuple){
+  var getCells = function(){
+    return cells;
+  }
+  var getCell = function(i){
+    return cells[i];
+  }
+
+  return {
+
+    updateCells: function(tuple) {
       for ( let m = 0 ; m < cells.length ; m++ ) {
         (cells[m]).rotate(tuple);
+        getCell(m).rotate(tuple);
+
       }
     },
-    toString : function(){
 
+    toString: function() {
+      console.log("Grid.toString()");
+      console.dir(this);
     }
-  };
-}());
-
-//   this.rotateAll = function(tuple){
-//     // TODO: this function may need multithreading!!
-//     for ( let m = 0 ; m < cells.length ; m++ ) {
-//       (cells[m]).rotate(tuple);
-//     }
-//   };
-//
-//
-//
-//   return cells;
-// };
-
-// EQ.DOM.Grid = function(args){
-//
-//   var spacing = EQ.DEFS.GRID.spacing;
-//   var span = { x : EQ.CONST.octaves.length, z : EQ.CONST.notes.length };
-//   var xHi, xLo, zHi, zLo;
-//   var cells = [];
-//   var arrangement = EQ.ENUM.GRID_PATTERN.DIAG_GRAD;
-//   var midi = 0;
-//
-//   (function(){
-//     xHi = (function(){ return (span.x-1)/2.0*spacing; }());
-//     xLo = (-1)*xHi;
-//     zHi = (function(){ return (span.z-1)/2.0*spacing; }());
-//     zLo = (-1)*zHi;
-//
-//     // Iterate through the grid...
-//     for ( let zi=zLo ; zi<=zHi ; zi+=spacing ) {
-//       for ( let xi=xLo ; xi<=xHi ; xi+=spacing ) {
-//
-//         var cube = new THREE.Mesh(args.geo,args.mat);
-//         let pos = {};
-//
-//         // Add and position..
-//         args.scene.add(cube);
-//         cube.position.x = pos.x = xi;
-//         cube.position.y = pos.y = 0;
-//         cube.position.z = pos.z = zi;
-//
-//         cells.push(new EQ.DOM.Cell({
-//           'pos' : pos,
-//           'cube' : cube,
-//           // 'pitch' : (function(){ return EQ.UTILS.midi2note(midi); })()
-//           'pitch' : (function(){ return EQ.UTILS.midi2note(midi); })
-//         }));
-//         midi++;
-//       }
-//     }
-//   })();
-//   return cells;
-// };
-// EQ.DOM.Grid.prototype = {
-//   // Grid.prototype = {
-//   constructor : EQ.DOM.Grid,
-//   test : function test(){
-//     console.log("this is a test from the non-existent grid!");
-//     return "this is a test";
-//   },
-//   rotateAll : function rotateAll(tuple){
-//     // TODO: this function may need multithreading!!
-//     for ( let m = 0 ; m < cells.length ; m++ ) {
-//       (cells[m]).rotate(tuple);
-//     }
-//   }
-// };
-EQ.DOM.Grid.prototype.constructor = EQ.DOM.Grid;
-EQ.DOM.Grid.prototype.test = function(){
-  console.log("this is a test from the non-existent grid!");
-  return "this is a test";
-};
-EQ.DOM.Grid.prototype.rotateAll = function(tuple){
-  // TODO: this function may need multithreading!!
-  for ( let m = 0 ; m < cells.length ; m++ ) {
-    (cells[m]).rotate(tuple);
   }
-};
+});
