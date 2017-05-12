@@ -1,28 +1,44 @@
-camera.position.z = EQ.DEF.CAM.pos.z;
+function renderScene() {
+    stats.update();
+    // rotate the cube around its axes
+    cube.rotation.x += 0.02;
+    cube.rotation.y += 0.02;
+    cube.rotation.z += 0.02;
 
+    // bounce the sphere up and down
+    step += 0.04;
+    sphere.position.x = 20 + ( 10 * (Math.cos(step)));
+    sphere.position.y = 2 + ( 10 * Math.abs(Math.sin(step)));
 
+    // render using requestAnimationFrame
+    requestAnimationFrame(renderScene);
+    renderer.render(scene, camera);
+}
+/* RENDERING */
+
+var rotTuple = { x : EQ.DEFS.CUBE.rotation,
+              y : EQ.DEFS.CUBE.rotation,
+              z : 0 };
+
+// TODO: remove test line..
+console.log('rotTuple');
+
+for (var prop in grid) {
+    if (grid.hasOwnProperty(prop)) {
+        console.log('grid.'+prop+'={'+grid[prop]+'}');
+    }
+}
 var render = function(){
     requestAnimationFrame(render);
 
-    // Rotate the cube..
-    rotateCube(EQ.DEF.CUBE.rotation);
+    /* UPDATE DRAWING HERE */
+    // grid.prototype.test();
+    grid.updateCells(rotTuple);
 
-    // Give the cube an orbit..
-    constantOrbit(EQ.DEF.CUBE.orbit.size, EQ.DEF.CUBE.orbit.speed);
+    /* UPDATE FLAGS HERE */
+    time += ( 1.0 / frameRate );
 
-    // Give the cube a damped oscillation..
-    // if ( time > 0.0 && flags.oscPrevYPos !== flags.oscCurrYPos ) {
-    //   // console.log('calculating..');
-    //   var newPos = dampedHarmonicOscillator(params.osc.amp, params.osc.damp, params.osc.freq, params.osc.phase, time);
-    //   cube.position.y = newPos;
-    //   flags.oscPrevYPos = flags.oscCurrYPos;
-    //   flags.oscCurrYPos = newPos;
-    // }
-
-
-    // Frame updates..
-    time += ( 1.0 / EQ.DEF.CAM.framesPerSecond );
-    // Next frame..
+    // Go again!
     renderer.render(scene,camera);
 };
 render();

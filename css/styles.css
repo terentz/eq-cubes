@@ -4,14 +4,13 @@ html, body {
   overflow:hidden;
 }
 
-#controls {
-  border: solid blue 2px;
-  width: 10%;
-  height: 100%;
+canvas {
+  width:100%;
   float: left;
 }
 
-canvas {
-  width:89%;
-  float: left;
+#stats-output {
+  position: absolute;
+  left: 0px;
+  top: 0px;
 }

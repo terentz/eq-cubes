@@ -76,25 +76,25 @@ var EQ = {
     }
   },
 
-  DEFS : {    /* DEFAULT SYSTEM VALUES */
+  PARAMS : {    /* APPLICATOIN PARAMETERS & DEFAULTS */
     CAM : {
-      arguments : {      // TODO group CAMERA.args even further if necessary.
+      args : {      // TODO group CAMERA.args even further if necessary.
         fov : 60.0,   // Field of view
         awf : 0.9,    // Aspect Width Factor
         near : 0.1,
         far : 2000.0,
-        initialPosition : {
-          x : 0.0,
-          y : 0.0,
-          z : 5.0
+        initPos : {
+          x : -20,
+          y : 8,
+          z : 15
         },
-        initialView : {
+        initView : {
           x : 0.0,
           y : 0.0,
           z : 0.0
         }
       },
-      framesPerSecond : 60.0
+      fraPerSec : 60.0
     },
     CUBE : {    // Some of the following could just as well be individualised
       size : 1.0,
@@ -107,10 +107,10 @@ var EQ = {
         //material : (function(){ return EQ.ENUM.MESH_MAT.NORMAL; }()), // TODO debug this bizarre error!
         colour : null      // TODO complete this!
       },
-      oscillation : {
-        dampeningFactor : 0.15,       // Gamma, the damping coefficient
-        amplitude : 1.0,        // Amplitude, initially
-        frequency : 8.0,       // Omega, the angular frequency
+      osc : {
+        dampFact : 0.15,       // Gamma, the damping coefficient
+        amp : 1.0,        // Amplitude, initially
+        freq : 8.0,       // Omega, the angular frequency
         phase : 0.0
       },
       motion : {
@@ -134,11 +134,20 @@ var EQ = {
       //   z : null
       // }
     },
+    LIGHT : {
+      type : 'spot',
+      color : 0xFFFFFF,
+      pos : {
+        x : -40,
+        y : 60,
+        z : -10
+      }
+    },
     lockDefaults : function(){
       Object.freeze(this.CAM);
-      Object.freeze(this.CAM.arguments);
-      Object.freeze(this.CAM.arguments.initialPosition);
-      Object.freeze(this.CAM.arguments.initialView);
+      Object.freeze(this.CAM.args);
+      Object.freeze(this.CAM.args.initPos);
+      Object.freeze(this.CAM.args.initView);
       Object.freeze(this.CUBE);
       Object.freeze(this.CUBE.orbit);
       // Object.freeze(this.GRID);
@@ -208,11 +217,11 @@ EQ.OBD.Cell = function(args){
   var playing = false;
   var volume = 0.0;
   var motion = {
-    orbiting : EQ.DEFS.CUBE.motion.orbiting,
-    rotating : EQ.DEFS.CUBE.motion.rotating,
-    jumping : EQ.DEFS.CUBE.motion.jumping,
-    DHMing : EQ.DEFS.CUBE.motion.DHMing,
-    SHMing : EQ.DEFS.CUBE.motion.SHMing
+    orbiting : EQ.PARAMS.CUBE.motion.orbiting,
+    rotating : EQ.PARAMS.CUBE.motion.rotating,
+    jumping : EQ.PARAMS.CUBE.motion.jumping,
+    DHMing : EQ.PARAMS.CUBE.motion.DHMing,
+    SHMing : EQ.PARAMS.CUBE.motion.SHMing
   };
 
   var lastX = null;
@@ -237,11 +246,20 @@ EQ.OBD.Cell = function(args){
     posX : function(){ return pos.x; },
     posY : function(){ return pos.y; },
     posZ : function(){ return pos.z; },
-    rotate : function(tuple){
-      cube.rotation.x += tuple.x;
-      cube.rotation.y += tuple.y;
-      cube.rotation.z += tuple.z;
+    rotate : function(args){
+      cube.rotation.x += args.x;
+      cube.rotation.y += args.y;
+      cube.rotation.z += args.z;
     },
+    scale : function(args){
+      cube.scale.x = args.wd;
+      cube.scale.y = args.ht;
+      cube.scale.z = args.dp;
+    },
+    orbit : function(args){
+      // TODO update orbit
+    },
+
     // orbit : function(){ return _orbit; },
     // orbitRad : function(){ return _orbit.radius; },
     // incOrbRad : function(inc){ if ( inc > 0 ) _orbit.radius += inc; },
@@ -329,23 +347,28 @@ EQ.OBD.Cell = function(args){
   };
 };
 EQ.OBD.Cell.prototype = {
-  constructor : EQ.OBD.Cell,
-  position : function(args){
-    cube.position.x = args.x;
-    cube.position.y = args.y;
-    cube.position.z = args.z;
-  },
-  rotate : function(args){
-    cube.rotation.x  += args.x;
-    cube.rotation.y  += args.y;
-    cube.rotation.z  += args.z;
-  }
+  constructor : EQ.OBD.Cell//,
+  // position : function(args){
+  //   cube.position.x = args.x;
+  //   cube.position.y = args.y;
+  //   cube.position.z = args.z;
+  // },
+  // rotate : function(args){
+  //   cube.rotation.x += args.x;
+  //   cube.rotation.y += args.y;
+  //   cube.rotation.z += args.z;
+  // },
+  // resize : function(args){
+  //   cube.parameters.width = args.wd;
+  //   cube.parameters.height = args.ht;
+  //   cube.parameters.depth = args.dp;
+  // }
 };
 
 
 EQ.OBD.Grid = (function(args){
 
-  var spacing = EQ.DEFS.GRID.spacing;
+  var spacing = EQ.PARAMS.GRID.spacing;
   var span = { x : EQ.CONST.octaves.length, z : EQ.CONST.notes.length };
   var xHi, xLo, zHi, zLo;
   var cells = [];
@@ -392,15 +415,23 @@ EQ.OBD.Grid = (function(args){
 
   return {
 
-    updateCells: function(tuple) {
-      for ( let m = 0 ; m < cells.length ; m++ ) {
-        (cells[m]).rotate(tuple);
-        getCell(m).rotate(tuple);
+    updateCells : function(args) {
 
+      for ( let m = 0 ; m < cells.length ; m++ ) {
+
+        // Rotation..
+        (cells[m]).rotate(args.rotation);
+
+        // Size..
+        (cells[m]).scale(args.geometry);
+
+        // Orbit radius...
+        (cells[m]).orbit(args.orbit);
       }
+
     },
 
-    toString: function() {
+    toString : function() {
       console.log("Grid.toString()");
       console.dir(this);
     }

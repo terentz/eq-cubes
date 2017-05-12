@@ -6,54 +6,42 @@
   <link rel="stylesheet" href="css/styles.css">
 
   <!-- LIBRARIES -->
-  <script src="../lib/jquery/2.2.4/jquery.js"></script>
-  <!-- <script src="../lib/jquery/3.1.1/jquery.js"></script> -->
-  <script src="../lib/gl/three/three.js"></script>
+  <script type="text/javascript" src="../lib/jquery/2.2.4/jquery.js"></script>
+  <script type="text/javascript" src="../lib/gl/three/three.js"></script>
+  <script type="text/javascript" src="../lib/statsjs/stats.js"></script>
+  <script type="text/javascript" src="../lib/dat.gui/dat.gui.js"></script>
   <!-- <script src="../lib/immutable/4.0.0-rc2/immutable.js"></script> -->
 
+
+  <!-- APPLICATION SCRIPTS -->
+  <script src="js/domain.js"></script>
+  <script src="js/controls.js"></script>
+  <script src="js/init.js"></script>
+  <!-- <script src="js/draw.js"></script> -->
+  <script type="text/javascript">
+    var scene;
+    var step;
+    var camera;
+    window.onload = init;
+  </script>
 
 
 
 
   <!-- todo's -->
-  <!-- TODO apply namespacing -->
-  <!-- TODO cube class -->
   <!-- TODO develop a shithot strategy>algorithm that manages memory by possibly
             reducing the numb-->
   <!-- TODO spiralOut & spiralIn functions (for starting and ending orbits) -->
-  <!-- TODO separate scripts and styles -->
   <!-- TODO create trigger for oscillation -->
-  <!-- TODO multiply the cube! -->
   <!-- TODO oscillate from audio -->
-
 
 
 
  </head>
  <body>
+   <div id="stats-output"></div>
+   <div id="WebGL-output"></div>
 
-   <!-- APPLICATION SCRIPTS -->
-   <script src="js/namespace.js"></script>
-   <script src="js/setup.js"></script>
-   <script src="js/render.js"></script>
-
-  <!-- CONTROLS -->
-<!--  <div id="controls">
-
-    <label for="amp">Amplitude:&nbsp;<span id="amp-val-disp"></span></label><input type="range" id="amp"><br>
-    <label for="damp">Damping:&nbsp;<span id="damp-val-disp"></span></label><input type="range" id="damp"><br>
-    <label for="freq">Frequency:&nbsp;<span id="freq-val-disp"></span></label><input type="range" id="freq"><br>
-    <label for="orbit-speed">Orbit speed:&nbsp;<span id="orbit-speed"></span></label><input type="range" id="orbit-speed"><br>
-    <label for="basic-osc-trigger">Basic oscillation trigger:&nbsp;</label><input type="button" id="basic-osc-trigger"><br>
--->
-
-<!--    <audio autoplay="autoplay" controls="none">
-      <source src="Sordid.mp3" />
-    </audio>-->
-
-    <!-- Control script -->
-    <!-- <script src="js/controls.js"></script>
-  </div>-->
 
 
  </body>
