@@ -1,17 +1,8 @@
 // dat.GUI init's...
 var params = new function() {
   let src = EQ.PARAMS;
-  this.rotationSpeed = src.CUBE.rotation;
-  // TODO implement the following..
-  this.orbitSpeed = src.CUBE.orbit.speed;
-  this.orbitRadius = src.CUBE.orbit.radius;
-  this.cubeSize = src.CUBE.size;
-  this.cubeColR = null;
-  this.cubeColG = null;
-  this.cubeColB = null;
-  this.cellSize = src.GRID.spacing;
-  this.oscDampingFactor = src.CUBE.osc.dampFact;
-  this.oscAmplitude = src.CUBE.osc.amp;
+
+  // Camera settings...
   this.camFieldOfView = src.CAM.args.fov;
   this.camAspectWdFact = src.CAM.args.awf;
   this.camNear = src.CAM.args.near;
@@ -31,19 +22,45 @@ var params = new function() {
   //       zD = Math.abs(src.CAM.args.initPos.z - src.CAM.initView.z);
   //   return Math.sqrt(Math.pow(xD,2)+Math.pow(yD,2)+Math.pow(zD,2));
   // });
+
+  // Cube settings...
+  this.rotationSpeed = src.CUBE.rotation;
+  // TODO implement the following..
+  this.orbitSpeed = src.CUBE.orbit.speed;
+  this.orbitRadius = src.CUBE.orbit.radius;
+  this.cubeSize = src.CUBE.size;
+  this.cubeColR = null;
+  this.cubeColG = null;
+  this.cubeColB = null;
+  this.oscDampingFactor = src.CUBE.osc.dampFact;
+  this.oscAmplitude = src.CUBE.osc.amp;
+
+  // Scene settings...
+  this.cellSize = src.GRID.spacing;
+  this.bgColourRed = EQ.UTILS.colourH2D(EQ.PARAMS.SCENE.bgColour).r;
+  this.bgColourGreen = EQ.UTILS.colourH2D(EQ.PARAMS.SCENE.bgColour).g;
+  this.bgColourBlue = EQ.UTILS.colourH2D(EQ.PARAMS.SCENE.bgColour).b;
 };
 
 function buildGUI(gui){
-  var cubeF = gui.addFolder('Cube');
-  cubeF.add(params, 'rotationSpeed', 0, 0.5);
-  cubeF.add(params, 'orbitSpeed', 0, 0.5);
-  cubeF.add(params, 'orbitRadius', 0, 3.0);
-  cubeF.add(params, 'cubeSize', 0, 3.0);
 
-  var camF = gui.addFolder('Cam');
-  camF.add(params, 'camXPos', -60, 60);
-  camF.add(params, 'camYPos', -60, 60);
-  camF.add(params, 'camZPos', -60, 60);
+  // Camera controls..
+  var camCtrl = gui.addFolder('Cam');
+  camCtrl.add(params, 'camXPos', -60, 60);
+  camCtrl.add(params, 'camYPos', -60, 60);
+  camCtrl.add(params, 'camZPos', -60, 60);
 
+  // Cube controls..
+  var cubeCtrl = gui.addFolder('Cube');
+  cubeCtrl.add(params, 'rotationSpeed', 0, 0.5);
+  cubeCtrl.add(params, 'orbitSpeed', 0, 0.5);
+  cubeCtrl.add(params, 'orbitRadius', 0, 3.0);
+  cubeCtrl.add(params, 'cubeSize', 0, 3.0);
+
+  // Scene controls..
+  var sceneCtrl = gui.addFolder('Scene');
+  sceneCtrl.add(params, 'bgColourRed', 0, 255).step(1);
+  sceneCtrl.add(params, 'bgColourGreen', 0, 255).step(1);
+  sceneCtrl.add(params, 'bgColourBlue', 0, 255).step(1);
 
 }

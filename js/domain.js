@@ -136,12 +136,15 @@ var EQ = {
     },
     LIGHT : {
       type : 'spot',
-      color : 0xFFFFFF,
+      colour : 0xFFFFFF,
       pos : {
         x : -40,
         y : 60,
         z : -10
       }
+    },
+    SCENE : {
+      bgColour : 0xEEEEEE
     },
     lockDefaults : function(){
       Object.freeze(this.CAM);
@@ -183,12 +186,65 @@ var EQ = {
               'freq': this.midi2freq(midi)
       };
     },
+
+    colourD2H : function(colDec){
+      console.log('Decimal to Hex');
+      // TODO refactor - cut out the string part..
+      // Extract components..
+      let rDec = colDec.r,
+          gDec = colDec.g,
+          bDec = colDec.b;
+      // Convert to strings..
+      let rHexStr = (+rDec).toString(16).toUpperCase(),
+          gHexStr = (+gDec).toString(16).toUpperCase(),
+          bHexStr = (+bDec).toString(16).toUpperCase();
+      // Pad with zeroes..
+      if ( rHexStr.length == 1 ) rHexStr = '0'+rHexStr;
+      if ( gHexStr.length == 1 ) gHexStr = '0'+gHexStr;
+      if ( bHexStr.length == 1 ) bHexStr = '0'+bHexStr;
+      // Recombine..
+      let colHexStr = rHexStr+gHexStr+gHexStr;
+      // TODO remove test line..
+      console.log('colHexStr: ' + colHexStr);
+      // Convert to number..
+      // let colHexNum = parseInt(colHexStr, 16);
+      let colHexNum = parseInt(colHexStr, 16);
+      // TODO remove the following test line..
+      console.log('rgbHex: ' + colHexNum.toString(16));
+      console.log('rgbHex: ' + colHexNum);
+      return eval('0x'+colHexNum.toString(16));
+    },
+    colourH2D : function(colHex){
+      console.log('Hex to Decimal');
+      // TODO refactor - cut out the string part..
+      // Convert to string..
+      let colHexStr = colHex.toString(10);
+      // TODO remove this test line..
+      console.log('colHexStr: ' + colHexStr);
+      // Extract components..
+      let rHexStr = colHexStr.substr(0,2),
+          gHexStr = colHexStr.substr(2,2),
+          bHexStr = colHexStr.substr(4,2);
+      // TODO remove these test lines..
+      console.log('rHexStr: ' + rHexStr);
+      console.log('gHexStr: ' + gHexStr);
+      console.log('bHexStr: ' + bHexStr);
+      // Convert to decimal..
+      let rDec = parseInt(rHexStr, 10),
+          gDec = parseInt(gHexStr, 10),
+          bDec = parseInt(bHexStr, 10);
+      // Return it..
+      return { r : rDec, g : gDec, b : bDec };
+    },
+
     lockUtils : function(){
       Object.freeze(this.freq2midi);
       Object.freeze(this.midi2octave);
       Object.freeze(this.midi2key);
       Object.freeze(this.midi2freq);
       Object.freeze(this.freq2note);
+      Object.freeze(this.midi2note);
+      Object.freeze(this.colourD2H);
     }
   }
 };

@@ -64,8 +64,9 @@ function init() {
   step = 0;
   render();
 
-
   function render() {
+
+    console.log('clearColor: ' + renderer.getClearColor().toString());
 
     updateScene();
     stats.update();
@@ -75,7 +76,6 @@ function init() {
     time += ( 1.0 / frameRate );
     renderer.render(scene, camera);
   }
-
 
   function updateScene() {
     // Cubes..
@@ -101,6 +101,22 @@ function init() {
     camera.position.y = params.camYPos;
     camera.position.z = params.camZPos;
     camera.lookAt(scene.position);
+
+    // Background colour..
+    let newColour = EQ.UTILS.colourD2H({
+                                          r : params.bgColourRed,
+                                          g : params.bgColourGreen,
+                                          b : params.bgColourBlue
+                                        });
+    let newRed = params.bgColourRed,
+        newGreen = params.bgColourGreen,
+        newBlue = params.bgColourBlue;
+    let oldCol = renderer.getClearColor();
+    if ( oldCol.r !== params.bgColourRed &&
+          oldCol.g !== params.bgColourGreen &&
+          oldCol.b !== params.bgColourBlue ) {
+      renderer.setClearColor(newColour, 1);      
+    }
 
   }
 
