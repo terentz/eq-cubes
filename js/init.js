@@ -3,6 +3,9 @@
 
 function init() {
 
+  initAxFileForm();
+
+
   scene = new THREE.Scene();
   var stats = initStats();
   var gui = new dat.GUI();
@@ -103,7 +106,7 @@ function init() {
     camera.lookAt(scene.position);
 
     // Background colour..
-    let newColour = EQ.UTILS.colourD2H({
+    let newColour = EQ.UTILS.CONVERT.colourD2H({
                                           r : params.bgColourRed,
                                           g : params.bgColourGreen,
                                           b : params.bgColourBlue

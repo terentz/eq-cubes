@@ -1,21 +1,7 @@
 
 /* TODO add these to EQ.UTILS */
-function replace(elem) {
-  $('#'+elem).removeClass('remove');
-  $('#'+elem).addClass('replace');
-}
-function remove(elem) {
-  $('#'+elem).removeClass('replace');
-  $('#'+elem).addClass('remove');
-}
-function show(elem) {
-  $('#'+elem).removeClass('hide');
-  $('#'+elem).addClass('show');
-}
-function hide(elem) {
-  $('#'+elem).removeClass('show');
-  $('#'+elem).addClass('hide');
-}
+
+
 
 
 /* TODO add this to the controls */
@@ -74,10 +60,6 @@ function hide(elem) {
 //   return method;
 // }());
 
-
-
-
-
 /* Script for file upload management */
 // 'use strict';
 //
@@ -119,33 +101,50 @@ function hide(elem) {
 //
 // }());
 
+// 'use strict';
+
+
+// $('#axFileInput').on( 'click', alert('clicked'));
+
+function initAxFileForm() {
+  $('#axFileInput').on( 'change', function(event) {
+    if ( this.files && this.files.length > 0 ) {
+      // Show play button..
+
+      // Load file into play function..
+      EQ.UTILS.ACTION.playFile(this.files[0]);
+    }
+    // alert('in event handler!');
+    //
+    // console.log('test');
+    // console.log(event);
+    // console.log(this[0]);
+  //   // var files = this[0].files;
+  //   // console.dir(files);
+  //   // console.log('test');
+  //   // console.dir(temp);
+  //   // console.log(temp);
+  //   // var fileNameVal = $('#fileSelectInput').val();
+  //   // console.log('#fileSelectInput:'+fileNameVal);
+  //   // console.log('play button clicked');
+  //   // if ( fileNameVal ) {
+  //   //   $('#filename').val(fileNameVal.split('\\').pop());
+  //   //   // $('#filename+label').text('selected');
+  //   //   $('#filename+label').val('selected');
+  //   //   show('playBtn');
+  //   // }
+  });
+
+}
 
 
 
 
-
-
-
-
-
-
-$('#fileSelectInput').change( function() {
-  console.dir(this.files);
-  var fileNameVal = $('#fileSelectInput').val();
-  console.log('#fileSelectInput:'+fileNameVal);
-  console.log('play button clicked');
-  if ( fileNameVal ) {
-    $('#filename').val(fileNameVal.split('\\').pop());
-    // $('#filename+label').text('selected');
-    $('#filename+label').val('selected');
-    show('playBtn');
-  }
-});
 
 // After correct file selection
 $('#playBtn').on('click', (function(){
-  if ( $('#playBtn').hasClass('show') ) {
-    var fileNameVal = $('#fileSelectInput').val();
+  if ( $('#playBtn').hasClass('showing') ) {
+    var fileNameVal = $('#axFileInput').val();
     if ( fileNameVal ) {
       $('#filename').val(fileNameVal);
       $('#filename+label').val('selected');

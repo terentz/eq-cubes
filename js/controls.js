@@ -2,6 +2,7 @@
 var params = new function() {
   let src = EQ.PARAMS;
 
+
   // Camera settings...
   this.camFieldOfView = src.CAM.args.fov;
   this.camAspectWdFact = src.CAM.args.awf;
@@ -23,6 +24,7 @@ var params = new function() {
   //   return Math.sqrt(Math.pow(xD,2)+Math.pow(yD,2)+Math.pow(zD,2));
   // });
 
+
   // Cube settings...
   this.rotationSpeed = src.CUBE.rotation;
   // TODO implement the following..
@@ -35,24 +37,27 @@ var params = new function() {
   this.oscDampingFactor = src.CUBE.osc.dampFact;
   this.oscAmplitude = src.CUBE.osc.amp;
 
+
   // Audio settings...
   this.nowPlaying = EQ.PARAMS.AUDIO.file;
 
 
   // Scene settings...
   this.cellSize = src.GRID.spacing;
-  this.bgColourRed = EQ.UTILS.colourH2D(EQ.PARAMS.SCENE.bgColour).r;
-  this.bgColourGreen = EQ.UTILS.colourH2D(EQ.PARAMS.SCENE.bgColour).g;
-  this.bgColourBlue = EQ.UTILS.colourH2D(EQ.PARAMS.SCENE.bgColour).b;
+  this.bgColourRed = EQ.UTILS.CONVERT.colourH2D(EQ.PARAMS.SCENE.bgColour).r;
+  this.bgColourGreen = EQ.UTILS.CONVERT.colourH2D(EQ.PARAMS.SCENE.bgColour).g;
+  this.bgColourBlue = EQ.UTILS.CONVERT.colourH2D(EQ.PARAMS.SCENE.bgColour).b;
 };
 
 function buildGUI(gui){
+
 
   // Camera controls..
   var camCtrl = gui.addFolder('Cam');
   camCtrl.add(params, 'camXPos', -60, 60);
   camCtrl.add(params, 'camYPos', -60, 60);
   camCtrl.add(params, 'camZPos', -60, 60);
+
 
   // Cube controls..
   var cubeCtrl = gui.addFolder('Cube');
@@ -61,27 +66,18 @@ function buildGUI(gui){
   cubeCtrl.add(params, 'orbitRadius', 0, 3.0);
   cubeCtrl.add(params, 'cubeSize', 0, 3.0);
 
+
   // Audio controls..
   var axCtrl = gui.addFolder('Audio');
-  // gui.add(axCtrl,'changeAudio').name('Change audio');
-  // axCtrl.add(params, { nowPlaying:
-  //   function(){
-  //     console.log("clicked");
-  //     show('modal');
-  //   }
-  // }).name('Now playing');
-  axCtrl.add(params, 'nowPlaying').name('Now playing');
-  var upload = { changeMusic: function(){
 
-      // console.log("clicked");
-      show('modal');
-      // show('playBtn'); TODO move this to 'modal.js'
+  axCtrl.add(params, 'nowPlaying').name('Now playing');
+
+  var upload = { changeMusic : function(){
+      EQ.UTILS.MODAL.replace('axFileForm');
     }
   };
-// }).name('Now playing');
-  axCtrl.add( upload,  'changeMusic').name('New music');
-    // }
-  // );
+  axCtrl.add(upload, 'changeMusic').name('Change music');
+
 
   // Scene controls..
   var sceneCtrl = gui.addFolder('Scene');
