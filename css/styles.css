@@ -14,3 +14,26 @@ canvas {
   left: 0px;
   top: 0px;
 }
+
+#nowPlaying {
+  position: absolute;
+  right: 0;
+  bottom: 0%;
+}
+
+
+
+
+
+.hiding {
+  visibility: hidden;
+}
+.showing {
+  visibility: visible;
+}
+.removed {
+  display: none;
+}
+.replaced {
+  display: block;
+}

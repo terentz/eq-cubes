@@ -3,7 +3,8 @@
 
 function init() {
 
-  initAxFileForm();
+  // initAxFileForm();
+
 
 
   scene = new THREE.Scene();
@@ -84,43 +85,41 @@ function init() {
     // Cubes..
     grid.updateCells({
                         rotation : {
-                          x : params.rotationSpeed,
+                          x : controls.rotationSpeed,
                           y : 0,
-                          z : params.rotationSpeed
+                          z : controls.rotationSpeed
                         },
                         geometry : {
-                          wd : params.cubeSize,
-                          ht : params.cubeSize,
-                          dp : params.cubeSize
+                          wd : controls.cubeSize,
+                          ht : controls.cubeSize,
+                          dp : controls.cubeSize
                         },
                         orbit : { // TODO implement the following..
-                          radius : params.orbitRadius,
-                          speed : params.orbitSpeed
+                          radius : controls.orbitRadius,
+                          speed : controls.orbitSpeed
                         }
                       });
 
     // Camera..
-    camera.position.x = params.camXPos;
-    camera.position.y = params.camYPos;
-    camera.position.z = params.camZPos;
+    camera.position.x = controls.camXPos;
+    camera.position.y = controls.camYPos;
+    camera.position.z = controls.camZPos;
     camera.lookAt(scene.position);
 
     // Background colour..
     let newColour = EQ.UTILS.CONVERT.colourD2H({
-                                          r : params.bgColourRed,
-                                          g : params.bgColourGreen,
-                                          b : params.bgColourBlue
+                                          r : controls.bgColRed,
+                                          g : controls.bgColGreen,
+                                          b : controls.bgColBlue
                                         });
-    let newRed = params.bgColourRed,
-        newGreen = params.bgColourGreen,
-        newBlue = params.bgColourBlue;
+    let newRed = controls.bgColRed,
+        newGreen = controls.bgColGreen,
+        newBlue = controls.bgColBlue;
     let oldCol = renderer.getClearColor();
-    if ( oldCol.r !== params.bgColourRed &&
-          oldCol.g !== params.bgColourGreen &&
-          oldCol.b !== params.bgColourBlue ) {
+    oldCol.r !== controls.bgColRed &&
+      oldCol.g !== controls.bgColGreen &&
+      oldCol.b !== controls.bgColBlue &&
       renderer.setClearColor(newColour, 1);
-    }
-
   }
 
   function initStats() {

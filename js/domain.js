@@ -147,21 +147,42 @@ var EQ = {
         z : -10
       }
     },
-    SCENE : {
-      bgColour : 0xEEEEEE
+    BACKGROUND : {
+      colour : 0xEEEEEE
     },
-    lockDefaults : function(){
+    lockParams : function(){
+      Object.freeze(this.AUDIO);
       Object.freeze(this.CAM);
       Object.freeze(this.CAM.args);
-      Object.freeze(this.CAM.args.initPos);
-      Object.freeze(this.CAM.args.initView);
+      // Object.freeze(this.CAM.args.initPos);
+      // Object.freeze(this.CAM.args.initView);
       Object.freeze(this.CUBE);
-      Object.freeze(this.CUBE.orbit);
-      // Object.freeze(this.GRID);
+      // Object.freeze(this.CUBE.orbit);
+      Object.freeze(this.GRID);
+      Object.freeze(this.LIGHT);
+      Object.freeze(this.BACKGROUND);
     }
   },
 
   UTILS : {   /* UTILITY FUNCTIONS */
+    ACTION : {
+      playFile : function(file){
+        let path = URL.createObjectURL(file);
+        $('#nowPlaying').attr('src', path);
+        var result;
+        try {
+          document.getElementById('nowPlaying').play();
+          return true;
+        } catch (e if e instanceof NotSupportedError) {
+          alert('File format not supported or possibly corrupted: ' + e);
+        } catch (e if e instanceof NotAllowedError) {
+          alert('NotAllowedError: ' + e);
+        } catch (e) {
+          alert('Unknown error type: ' + e);
+        }
+        return false;
+      }
+    },
     CONVERT : {
       freq2midi : function(freq){
         return Math.round(12*Math.log2(freq/EQ.CONST.C0))+12;
@@ -271,37 +292,26 @@ var EQ = {
         $('#'+elem).addClass('hiding');
       }
     },
-    ACTION : {
-      playFile : function(file){
-        console.dir(file);
-        /* V1... */
-        // var reader = new FileReader();
-        // reader.onload = function(event){
-        //   let path = event.target.result;
-        //   console.log(path);
-        //   $('#audioPlayBack').html('<embed id=\'nowPlaying\' src=\''+path+'\' autostart=\'true\' loop=\'true\' width=\'0\' height=\'0\'>');
-        //   // $('#nowPlaying').attr('src',url);
-        //   reader.readAsDataURL(file);
-        // }
-        /* V2 */
-        let path = URL.createObjectURL(file);
-        $('#nowPlaying').attr('src', path);
-        getElementById('nowPlaying').play();
-      }
+    lockUtils : function(){
+      Object.freeze(this.ACTION);
+      Object.freeze(this.ACTION.playFile);
+      Object.freeze(this.CONVERT);
+      Object.freeze(this.CONVERT.freq2midi);
+      Object.freeze(this.CONVERT.midi2octave);
+      Object.freeze(this.CONVERT.midi2key);
+      Object.freeze(this.CONVERT.midi2freq);
+      Object.freeze(this.CONVERT.freq2note);
+      Object.freeze(this.CONVERT.midi2note);
+      Object.freeze(this.CONVERT.colourD2H);
+      Object.freeze(this.CONVERT.colourH2D);
+      Object.freeze(this.FORMAT);
+      Object.freeze(this.FORMAT.humanFileSize);
+      Object.freeze(this.MODAL);
+      Object.freeze(this.MODAL.replace);
+      Object.freeze(this.MODAL.remove);
+      Object.freeze(this.MODAL.show);
+      Object.freeze(this.MODAL.hide);
     }
-    // },
-    //
-    // /* Conversions from frequency to midi or Note object, and from midi to octave, key, or frequency */
-    //
-    // lockUtils : function(){
-    //   Object.freeze(this.freq2midi);
-    //   Object.freeze(this.midi2octave);
-    //   Object.freeze(this.midi2key);
-    //   Object.freeze(this.midi2freq);
-    //   Object.freeze(this.freq2note);
-    //   Object.freeze(this.midi2note);
-    //   Object.freeze(this.colourD2H);
-    // }
   }
 };
 
@@ -521,8 +531,12 @@ EQ.OBD.Grid = (function(args){
   var getCells = function(){
     return cells;
   }
-  var getCell = function(i){
-    return cells[i];
+  var getCell = function(midiVal){
+    if ( typeof midiVal == 'number' && midiVal >= 0 && midiVal < cells.length ) {
+      return cells[midiVal];
+    } else {
+      return false;
+    }
   }
 
   return {

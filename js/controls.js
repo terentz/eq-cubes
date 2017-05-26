@@ -1,7 +1,6 @@
 // dat.GUI init's...
-var params = new function() {
+var controls = new function() {
   let src = EQ.PARAMS;
-
 
   // Camera settings...
   this.camFieldOfView = src.CAM.args.fov;
@@ -24,7 +23,6 @@ var params = new function() {
   //   return Math.sqrt(Math.pow(xD,2)+Math.pow(yD,2)+Math.pow(zD,2));
   // });
 
-
   // Cube settings...
   this.rotationSpeed = src.CUBE.rotation;
   // TODO implement the following..
@@ -37,52 +35,62 @@ var params = new function() {
   this.oscDampingFactor = src.CUBE.osc.dampFact;
   this.oscAmplitude = src.CUBE.osc.amp;
 
-
   // Audio settings...
-  this.nowPlaying = EQ.PARAMS.AUDIO.file;
-
+  this.nowPlaying = (function(){
+    var filename = EQ.PARAMS.AUDIO.file,
+      trackname = filename.slice(filename.lastIndexOf('/')+1);
+    return trackname;
+  })();
+  this.changeMusic = function() {
+    $('#axFileInput').trigger('click');
+    $('#axFileInput').change( function() {
+      if ( this.files &&
+            this.files.length > 0 &&
+            /audio\/\w+/.test(this.files[0].type) ) {
+        var file = this.files[0],
+        filename = file.name,
+        trackname = filename.slice(0, filename.lastIndexOf('.'));
+        EQ.UTILS.ACTION.playFile(file) ?
+          ( controls.nowPlaying = trackname ) :
+          ( controls.nowPlaying = 'error!' ) ;
+      } else {
+        alert('No file selected!');
+      }
+    });
+  };
 
   // Scene settings...
   this.cellSize = src.GRID.spacing;
-  this.bgColourRed = EQ.UTILS.CONVERT.colourH2D(EQ.PARAMS.SCENE.bgColour).r;
-  this.bgColourGreen = EQ.UTILS.CONVERT.colourH2D(EQ.PARAMS.SCENE.bgColour).g;
-  this.bgColourBlue = EQ.UTILS.CONVERT.colourH2D(EQ.PARAMS.SCENE.bgColour).b;
+  this.bgColRed = EQ.UTILS.CONVERT.colourH2D(EQ.PARAMS.BACKGROUND.colour).r;
+  this.bgColGreen = EQ.UTILS.CONVERT.colourH2D(EQ.PARAMS.BACKGROUND.colour).g;
+  this.bgColBlue = EQ.UTILS.CONVERT.colourH2D(EQ.PARAMS.BACKGROUND.colour).b;
 };
+
 
 function buildGUI(gui){
 
-
   // Camera controls..
-  var camCtrl = gui.addFolder('Cam');
-  camCtrl.add(params, 'camXPos', -60, 60);
-  camCtrl.add(params, 'camYPos', -60, 60);
-  camCtrl.add(params, 'camZPos', -60, 60);
-
+  var camCtrl = gui.addFolder('Camera');
+  camCtrl.add(controls, 'camXPos', -60, 60).name('x position');
+  camCtrl.add(controls, 'camYPos', -60, 60).name('y position');
+  camCtrl.add(controls, 'camZPos', -60, 60).name('z position');
 
   // Cube controls..
-  var cubeCtrl = gui.addFolder('Cube');
-  cubeCtrl.add(params, 'rotationSpeed', 0, 0.5);
-  cubeCtrl.add(params, 'orbitSpeed', 0, 0.5);
-  cubeCtrl.add(params, 'orbitRadius', 0, 3.0);
-  cubeCtrl.add(params, 'cubeSize', 0, 3.0);
-
+  var cubeCtrl = gui.addFolder('Cubes');
+  cubeCtrl.add(controls, 'rotationSpeed', 0, 0.5).name('Rotation speed');
+  cubeCtrl.add(controls, 'orbitSpeed', 0, 0.5).name('Orbit speed');
+  cubeCtrl.add(controls, 'orbitRadius', 0, 3.0).name('Orbit radius');
+  cubeCtrl.add(controls, 'cubeSize', 0, 3.0).name('Cube size');
 
   // Audio controls..
   var axCtrl = gui.addFolder('Audio');
-
-  axCtrl.add(params, 'nowPlaying').name('Now playing');
-
-  var upload = { changeMusic : function(){
-      EQ.UTILS.MODAL.replace('axFileForm');
-    }
-  };
-  axCtrl.add(upload, 'changeMusic').name('Change music');
-
+  axCtrl.add(controls, 'nowPlaying').name('Now playing').listen();
+  axCtrl.add(controls, 'changeMusic').name('Change music');
 
   // Scene controls..
-  var sceneCtrl = gui.addFolder('Scene');
-  sceneCtrl.add(params, 'bgColourRed', 0, 255).step(1);
-  sceneCtrl.add(params, 'bgColourGreen', 0, 255).step(1);
-  sceneCtrl.add(params, 'bgColourBlue', 0, 255).step(1);
-
+  var bgCtrl = gui.addFolder('Background');
+  var bgColCtrl = bgCtrl.addFolder('Colour');
+  bgColCtrl.add(controls, 'bgColRed', 0, 255).step(1).name('red');
+  bgColCtrl.add(controls, 'bgColGreen', 0, 255).step(1).name('green');
+  bgColCtrl.add(controls, 'bgColBlue', 0, 255).step(1).name('blue');
 }
