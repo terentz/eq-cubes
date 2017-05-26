@@ -32,7 +32,7 @@ function init() {
   var geometry = new THREE.BoxGeometry(mag,mag,mag);
   var material = new THREE.MeshNormalMaterial();
   var grid = new EQ.OBD.Grid({ 'scene':scene, 'geo':geometry, 'mat':material });
-  grid.toString();
+  // grid.toString();
 
 
   // Lights...
@@ -66,7 +66,7 @@ function init() {
 
   function render() {
 
-    console.log('clearColor: ' + renderer.getClearColor().toString());
+    // console.log('clearColor: ' + renderer.getClearColor().toString());
 
     updateScene();
     stats.update();
@@ -115,7 +115,7 @@ function init() {
     if ( oldCol.r !== params.bgColourRed &&
           oldCol.g !== params.bgColourGreen &&
           oldCol.b !== params.bgColourBlue ) {
-      renderer.setClearColor(newColour, 1);      
+      renderer.setClearColor(newColour, 1);
     }
 
   }

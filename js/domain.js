@@ -77,6 +77,10 @@ var EQ = {
   },
 
   PARAMS : {    /* APPLICATOIN PARAMETERS & DEFAULTS */
+    AUDIO : {
+      volume : null,
+      file : 'ax/Sordid.mp3'
+    },
     CAM : {
       args : {      // TODO group CAMERA.args even further if necessary.
         fov : 60.0,   // Field of view
@@ -188,7 +192,7 @@ var EQ = {
     },
 
     colourD2H : function(colDec){
-      console.log('Decimal to Hex');
+      // console.log('Decimal to Hex');
       // TODO refactor - cut out the string part..
       // Extract components..
       let rDec = colDec.r,
@@ -205,31 +209,31 @@ var EQ = {
       // Recombine..
       let colHexStr = rHexStr+gHexStr+gHexStr;
       // TODO remove test line..
-      console.log('colHexStr: ' + colHexStr);
+      // console.log('colHexStr: ' + colHexStr);
       // Convert to number..
       // let colHexNum = parseInt(colHexStr, 16);
       let colHexNum = parseInt(colHexStr, 16);
       // TODO remove the following test line..
-      console.log('rgbHex: ' + colHexNum.toString(16));
-      console.log('rgbHex: ' + colHexNum);
+      // console.log('rgbHex: ' + colHexNum.toString(16));
+      // console.log('rgbHex: ' + colHexNum);
       return eval('0x'+colHexNum.toString(16));
     },
     colourH2D : function(colHex){
-      console.log('Hex to Decimal');
+      // console.log('Hex to Decimal');
       // TODO refactor - cut out the string part..
       // Convert to string..
       let colHexStr = colHex.toString(10);
       // TODO remove this test line..
-      console.log('colHexStr: ' + colHexStr);
+      // console.log('colHexStr: ' + colHexStr);
       // Extract components..
       let rHexStr = colHexStr.substr(0,2),
           gHexStr = colHexStr.substr(2,2),
           bHexStr = colHexStr.substr(4,2);
       // TODO remove these test lines..
-      console.log('rHexStr: ' + rHexStr);
-      console.log('gHexStr: ' + gHexStr);
-      console.log('bHexStr: ' + bHexStr);
-      // Convert to decimal..
+      // console.log('rHexStr: ' + rHexStr);
+      // console.log('gHexStr: ' + gHexStr);
+      // console.log('bHexStr: ' + bHexStr);
+      // // Convert to decimal..
       let rDec = parseInt(rHexStr, 10),
           gDec = parseInt(gHexStr, 10),
           bDec = parseInt(bHexStr, 10);

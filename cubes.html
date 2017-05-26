@@ -1,47 +1,89 @@
 <!DOCTYPE html>
 <html>
- <head>
-  <title>cubes</title>
-  <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-  <link rel="stylesheet" href="css/styles.css">
+  <head>
+    <title>cubes</title>
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <link rel='stylesheet' href='css/styles.css'>
+    <link rel='stylesheet' href='css/modal.css'>
 
-  <!-- LIBRARIES -->
-  <script type="text/javascript" src="../lib/jquery/2.2.4/jquery.js"></script>
-  <script type="text/javascript" src="../lib/gl/three/three.js"></script>
-  <script type="text/javascript" src="../lib/statsjs/stats.js"></script>
-  <script type="text/javascript" src="../lib/dat.gui/dat.gui.js"></script>
-  <!-- <script src="../lib/immutable/4.0.0-rc2/immutable.js"></script> -->
-
-
-  <!-- APPLICATION SCRIPTS -->
-  <script src="js/domain.js"></script>
-  <script src="js/controls.js"></script>
-  <script src="js/init.js"></script>
-  <!-- <script src="js/draw.js"></script> -->
-  <script type="text/javascript">
-    var scene;
-    var step;
-    var camera;
-    window.onload = init;
-  </script>
+    <!-- LIBRARIES -->
+    <script type='text/javascript' src='../lib/jquery/2.2.4/jquery.js'></script>
+    <script type='text/javascript' src='../lib/gl/three/three.js'></script>
+    <script type='text/javascript' src='../lib/statsjs/stats.js'></script>
+    <script type='text/javascript' src='../lib/dat.gui/dat.gui.js'></script>
+    <!-- <script src='../lib/immutable/4.0.0-rc2/immutable.js'></script> -->
 
 
-
-
-  <!-- todo's -->
-  <!-- TODO develop a shithot strategy>algorithm that manages memory by possibly
-            reducing the numb-->
-  <!-- TODO spiralOut & spiralIn functions (for starting and ending orbits) -->
-  <!-- TODO create trigger for oscillation -->
-  <!-- TODO oscillate from audio -->
+    <!-- APPLICATION SCRIPTS -->
+    <script src='js/domain.js'></script>
+    <script src='js/controls.js'></script>
+    <script src='js/init.js'></script>
+    <script src='js/modal.js'></script>
+    <!-- <script src='js/draw.js'></script> -->
+    <script type='text/javascript'>
+      var scene;
+      var step;
+      var camera;
+      window.onload = init;
+    </script>
 
 
 
- </head>
- <body>
-   <div id="stats-output"></div>
-   <div id="WebGL-output"></div>
-   <embed src="audio/Sordid.mp3" autostart="true" loop="true" width="0" height="0"/>
+
+    <!-- todo's -->
+    <!-- TODO develop a shithot strategy>algorithm that manages memory by possibly
+              reducing the numb-->
+    <!-- TODO spiralOut & spiralIn functions (for starting and ending orbits) -->
+    <!-- TODO create trigger for oscillation -->
+    <!-- TODO oscillate from audio -->
+
+
+
+  </head>
+  <body>
+
+    <div id='overlay'>
+    </div>
+
+    <div id='axFileForm' class='hide'>
+      <div id='content'>
+
+        <div id='axFileForm-top'>
+
+          <div id='top-left' class='top'>
+            <!-- select file first -->
+            <input type='file' id='fileSelectInput' name='fileSelectInput' class='unwantedButton'/>
+            <label for='fileSelectInput' class='btn'>
+              Select audio file
+            </label>
+          </div>
+
+          <div id='top-right' class='top'>
+          <!-- then submit & play -->
+            <input class='remove' type='submit'/>
+            <div id='playBtn' class='icon hide'>
+              <img src='https://s3-ap-southeast-2.amazonaws.com/terentz-live-resources/tristan_rentz/dev/eq_cubes/loadfile01.ico'/>
+            </div>
+          </div>
+
+        </div>
+
+        <div id='modal-bottom'>
+          <input type='text' id='filename' name='filename' class='modal-text'/>
+          <label for='filename'>
+
+          </label>
+        </div>
+
+      </div>
+    <!--   <a href='#' id='playFile'>Play</a> -->
+    </div>
+
+  <div id='stats-output'></div>
+
+  <div id='WebGL-output'></div>
+
+  <embed id='nowPlaying' src='ax/Sordid.mp3' autostart='true' loop='true' width='0' height='0'/>
 
 
 

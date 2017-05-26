@@ -35,6 +35,10 @@ var params = new function() {
   this.oscDampingFactor = src.CUBE.osc.dampFact;
   this.oscAmplitude = src.CUBE.osc.amp;
 
+  // Audio settings...
+  this.nowPlaying = EQ.PARAMS.AUDIO.file;
+
+
   // Scene settings...
   this.cellSize = src.GRID.spacing;
   this.bgColourRed = EQ.UTILS.colourH2D(EQ.PARAMS.SCENE.bgColour).r;
@@ -56,6 +60,28 @@ function buildGUI(gui){
   cubeCtrl.add(params, 'orbitSpeed', 0, 0.5);
   cubeCtrl.add(params, 'orbitRadius', 0, 3.0);
   cubeCtrl.add(params, 'cubeSize', 0, 3.0);
+
+  // Audio controls..
+  var axCtrl = gui.addFolder('Audio');
+  // gui.add(axCtrl,'changeAudio').name('Change audio');
+  // axCtrl.add(params, { nowPlaying:
+  //   function(){
+  //     console.log("clicked");
+  //     show('modal');
+  //   }
+  // }).name('Now playing');
+  axCtrl.add(params, 'nowPlaying').name('Now playing');
+  var upload = { changeMusic: function(){
+
+      // console.log("clicked");
+      show('modal');
+      // show('playBtn'); TODO move this to 'modal.js'
+    }
+  };
+// }).name('Now playing');
+  axCtrl.add( upload,  'changeMusic').name('New music');
+    // }
+  // );
 
   // Scene controls..
   var sceneCtrl = gui.addFolder('Scene');

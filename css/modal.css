@@ -1,0 +1,88 @@
+.hide {
+  visibility: hidden;
+}
+.show {
+  visibility: visible;
+}
+.remove {
+  display: none;
+}
+.replace {
+  display: inline;
+}
+
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  opacity: 0.0;
+  filter: alpha(opacity=50);
+}
+
+#modal {
+  font-family: 'Noto Sans';
+  font-size: 12px;
+  position:absolute;
+  background: #242424;
+  border-radius:14px;
+  padding:8px;
+/*   display:block; */
+/*   display:none; */
+  /*visibility: hidden;*/
+}
+.modal-text {
+  margin: 8px;
+}
+.top {
+  float: left;
+}
+#top-right {
+  padding: 3px;
+}
+.btn {
+  background: #777777;
+  background-image: -webkit-linear-gradient(top, #777777, #010101);
+  background-image: -moz-linear-gradient(top, #777777, #010101);
+  background-image: -ms-linear-gradient(top, #777777, #010101);
+  background-image: -o-linear-gradient(top, #777777, #010101);
+  background-image: linear-gradient(to bottom, #777777, #010101);
+  -webkit-border-radius: 8;
+  -moz-border-radius: 8;
+  border-radius: 8px;
+  -webkit-box-shadow: 0px 1px 1px #666666;
+  -moz-box-shadow: 0px 1px 1px #666666;
+  box-shadow: 0px 1px 1px #666666;
+  color: #eeeeee;
+  padding: 6px 10px 6px 10px;
+  margin: 8px;
+  text-decoration: none;
+}
+.btn:hover {
+  background: #999999;
+  background-image: -webkit-linear-gradient(top, #999999, #232323);
+  background-image: -moz-linear-gradient(top, #999999, #232323);
+  background-image: -ms-linear-gradient(top, #999999, #232323);
+  background-image: -o-linear-gradient(top, #999999, #232323);
+  background-image: linear-gradient(to bottom, #999999, #232323);
+  text-decoration: none;
+}
+#fileSelectInput {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+#fileSelectInput + label {
+    max-width: 80%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    padding: 0.625rem 1.25rem;
+}

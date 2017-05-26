@@ -111,6 +111,12 @@ EQ Cubes is a proof of concept for a Resolume project, coded in ThreeJS.  The ai
 
 ---
 
+## Roadmap
+
+
+
+---
+
 ## Libraries/APIs
 - [ThreeJS - MrDoob's famous WebGL library](https://threejs.org/)
 - [jQuery](https://jquery.com/)
@@ -124,7 +130,7 @@ EQ Cubes is a proof of concept for a Resolume project, coded in ThreeJS.  The ai
 ## References
 [I used a modal window tutorial that can be found here](http://www.jacklmoore.com/notes/jquery-modal-tutorial/)
 [dat.GUI offered the what's and how's of its usage here](https://workshop.chromeexperiments.com/examples/gui/#1--Basic-Usage)
-
+[The target of this link assisted me in loading files locally to the browser without uploading to the server](https://scotch.io/tutorials/use-the-html5-file-api-to-work-with-files-locally-in-the-browser)
 ---
 
 ## Tools
