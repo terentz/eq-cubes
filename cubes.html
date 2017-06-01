@@ -3,32 +3,34 @@
   <head>
     <title>cubes</title>
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+
+    <!-- STYLESHEETS -->
     <link rel='stylesheet' href='css/styles.css'>
+    <link rel='stylesheet' href='css/piano.css'>
     <!-- <link rel='stylesheet' href='css/modal.css'> -->
 
     <!-- LIBRARIES -->
-    <script type='text/javascript' src='../lib/jquery/2.2.4/jquery.js'></script>
+    <script type='text/javascript' src='../lib/jquery/3.1.1/jquery.js'></script>
     <script type='text/javascript' src='../lib/gl/three/three.js'></script>
+    <script type='text/javascript' src='../lib/gl/three/controls/OrbitControls.js'></script>
     <script type='text/javascript' src='../lib/statsjs/stats.js'></script>
     <script type='text/javascript' src='../lib/dat.gui/dat.gui.js'></script>
+    <!-- <script type='text/javascript' src='../lib/numeraljs/numeral.js'></script> -->
     <!-- <script src='../lib/immutable/4.0.0-rc2/immutable.js'></script> -->
 
 
     <!-- APPLICATION SCRIPTS -->
     <script src='js/domain.js'></script>
-    <script src='js/modal.js'></script>
-    <script src='js/controls.js'></script>
+    <script src='js/dancemoves.js'></script>
+    <!-- <script src='js/controls.js'></script> -->
     <script src='js/init.js'></script>
-    <!-- <script src='js/draw.js'></script> -->
+
     <script type='text/javascript'>
-      var scene;
-      var step;
-      var camera;
+      // var kbAudioContext = new ( window.AudioContext || window.webkitAudioContext ),
+      //     datgui, stats, controls, grid, scene, camera,
+      //     fps, step, ts, tsLast, time=0.0;
       window.onload = init;
     </script>
-
-
-
 
     <!-- todo's -->
     <!-- TODO develop a shithot strategy>algorithm that manages memory by possibly
@@ -36,59 +38,60 @@
     <!-- TODO spiralOut & spiralIn functions (for starting and ending orbits) -->
     <!-- TODO create trigger for oscillation -->
     <!-- TODO oscillate from audio -->
-
-
-
   </head>
+
   <body>
 
-    <!-- <div id='overlay'>
-    </div> -->
-
-    <div id='axFileForm' class='removed'>
-      <div id='content'>
-
-        <div id='axFileForm-top'>
-
-          <div id='top-left' class='top'>
-            <!-- select file first -->
-            <input type='file' id='axFileInput' name='axFileInput' accept='audio/*' class='unwantedButton'/>
-            <label for='axFileInput' class='btn'>
-              Select audio file
-            </label>
-          </div>
-
-          <div id='top-right' class='top'>
-          <!-- then submit & play -->
-            <input class='removed' type='submit'/>
-            <div id='playBtn' class='icon hiding'>
-              <img src='https://s3-ap-southeast-2.amazonaws.com/terentz-live-resources/tristan_rentz/dev/eq_cubes/loadfile01.ico'/>
-            </div>
-          </div>
-
-        </div>
-
-        <div id='axFileForm-bottom'>
-          <input type='text' id='filename' name='filename' class='axFileForm-text'/>
-          <label for='filename'>
-
-          </label>
-        </div>
-
+    <!-- SCIENTIFIC PITCH KEYBOARD -->
+    <div id='keyboard-container'>
+      <div id='keyboard'>
       </div>
-    <!--   <a href='#' id='playFile'>Play</a> -->
+      <div id='keyboard-controls'>
+        <div class='kb-ctrl'>
+          <label for='kb-volume-ctrl'>Volume: </label><br>
+          <input type='range' min='0.0' max='1.0' step='0.01'
+              value='0.5' list='kb-volumes' name='kb-volume-ctrl' id='kb-volume-ctrl'>
+          <datalist id='kb-volumes'>
+            <option value='0.0' label='Mute'>
+            <option value='1.0' label='100%'>
+          </datalist>
+        </div>
+        <div class='kb-ctrl'>
+          <label for='kb-waveform-selector'>Waveform: </label><br>
+          <select id='kb-waveform-selector' name='kb-waveform-selector'>
+            <option value='sine'>sine</option>
+            <option value='square' selected>square</option>
+            <option value='sawtooth'>sawtooth</option>
+            <option value='triangle'>triangle</option>
+            <!-- <option value='custom'>Custom</option> -->
+          </select>
+        </div>
+        <div class='kb-ctrl'>
+          <div class='kb-asrd-ctrl' id='attack'>
+          </div>
+          <div class='kb-asrd-ctrl' id='sustain'>
+          </div>
+          <div class='kb-asrd-ctrl' id='release'>
+          </div>
+          <div class='kb-asrd-ctrl' id='decay'>
+          </div>
+        </div>
+      </div>
     </div>
 
-  <div id='stats-output'></div>
+    <!-- MUSIC SELECTION AND PLAYBACK -->
+    <div id='axFileForm' class='removed'>
+      <input type='file' id='axFileInput' name='axFileInput' accept='audio/*' class='unwantedButton'/>
+    </div> <!-- TODO merge/refactor these divs & their associated code -->
+    <div id='audioPlayBack'>
+      <audio id='nowPlaying' controls src='ax/Sordid.mp3' autoplay='true' loop='true' width='0' height='0'/>
+    </div>
 
-  <div id='WebGL-output'></div>
+    <!-- STATS.JS -->
+    <div id='stats-output'></div>
 
-  <div id='audioPlayBack'>
-    <audio id='nowPlaying' controls src='ax/Sordid.mp3' autoplay='true' loop='true' width='0' height='0'/>
-  </div>
+    <!-- WEBGL OUTPUT -->
+    <div id='WebGL-output'></div>
 
-
-
-
- </body>
+  </body>
 </html>

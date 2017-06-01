@@ -1,5 +1,5 @@
 // dat.GUI init's...
-var controls = new function() {
+controls = new function() {
   let src = EQ.PARAMS;
 
   // Camera settings...
@@ -67,7 +67,7 @@ var controls = new function() {
 };
 
 
-function buildGUI(gui){
+function buildSystemGUI(gui){
 
   // Camera controls..
   var camCtrl = gui.addFolder('Camera');

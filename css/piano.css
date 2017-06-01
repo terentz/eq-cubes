@@ -1,0 +1,50 @@
+#keyboard-container {
+  z-index: 1;
+  opacity: .7;
+  margin: 0 auto;
+  /*position: absolute;*/
+  position static;
+  display: table;
+}
+
+#keyboard {
+  position: relative;
+  /*border: solid  1px;*/
+  cursor: pointer;
+  opacity: inherit;
+}
+.white-key {
+  position: absolute;
+  z-index: 2;
+  height: 100%;
+  outline: solid silver 1px;
+  background-color: white;
+  opacity: inherit;
+}
+.white-key:hover {
+  background-color: #e3e3e3;
+}
+.black-key {
+  z-index: 3;
+  position: absolute;
+  background-color: #222222;
+  opacity: inherit;
+  /*width: 0.8vw;
+  height: 2.5vw;*/
+}
+.black-key:hover {
+  background-color: #555555;
+}
+
+
+#keyboard-controls {
+
+}
+.kb-ctrl {
+  float: left;
+  display: table-cell;
+  margin: 0.5vw 0.5vw;
+}
+.kb-ctrl input, .kb-ctrl select {
+  cursor: pointer;
+}

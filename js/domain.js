@@ -15,6 +15,20 @@ var EQ = {
     A4 : 440,
     C0 : (function(){ return this.A4*Math.pow(2, -4.75); })(),
     notes : ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"],
+    notes2 : [
+      { 'name':'C',  'id':'C',  off:0,   idx:0 },
+      { 'name':'C#', 'id':'Cs', off:0.5, idx:1 },
+      { 'name':'D',  'id':'D',  off:1,   idx:2 },
+      { 'name':'D#', 'id':'Ds', off:1.5, idx:3 },
+      { 'name':'E',  'id':'E',  off:2,   idx:4 },
+      { 'name':'F',  'id':'F',  off:3,   idx:5 },
+      { 'name':'F#', 'id':'Fs', off:3.5, idx:6 },
+      { 'name':'G',  'id':'G',  off:4,   idx:7 },
+      { 'name':'G#', 'id':'Gs', off:4.5, idx:8 },
+      { 'name':'A',  'id':'A',  off:5,   idx:9 },
+      { 'name':'A#', 'id':'As', off:5.5, idx:10 },
+      { 'name':'B',  'id':'B',  off:6,   idx:11 }
+    ],
     octaves : [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
     freqs : [
       8.176, 8.662, 9.177, 9.723, 10.301, 10.914, 11.563, 12.250, 12.979, 13.750, 14.568, 15.434,
@@ -79,7 +93,7 @@ var EQ = {
   PARAMS : {    /* APPLICATOIN PARAMETERS & DEFAULTS */
     AUDIO : {
       volume : null,
-      file : 'ax/Sordid.mp3'
+      file : 'ax/Sordid.mp3',
     },
     CAM : {
       args : {      // TODO group CAMERA.args even further if necessary.
@@ -146,6 +160,18 @@ var EQ = {
         y : 60,
         z : -10
       }
+    },
+    PIANO : {
+      wd : 60.0,
+      ht : 5,
+      whtHt : 5.0,
+      blkWd : null,
+      blkHt : null,
+      ctrlHt : null,
+      blkKeyDownColour : '#B30B0B',
+      blkKeyHoverColour : null,
+      whtKeyDownColour : null,
+      whtKeyHoverColour : null
     },
     BACKGROUND : {
       colour : 0xEEEEEE

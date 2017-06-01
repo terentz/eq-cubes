@@ -3,7 +3,12 @@ html, body {
   padding:0;
   overflow:hidden;
 }
-
+#WebGL-output {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: -1;
+}
 canvas {
   width:100%;
   float: left;
@@ -24,6 +29,7 @@ canvas {
 
 
 
+/* Element hiding... */
 
 .hiding {
   visibility: hidden;
