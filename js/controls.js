@@ -1,5 +1,7 @@
 // dat.GUI init's...
-controls = new function() {
+var controls = new function() {
+  // console.log('in '+ arguments.callee.name +'()');
+
   let src = EQ.PARAMS;
 
   // Camera settings...
@@ -64,10 +66,13 @@ controls = new function() {
   this.bgColRed = EQ.UTILS.CONVERT.colourH2D(EQ.PARAMS.BACKGROUND.colour).r;
   this.bgColGreen = EQ.UTILS.CONVERT.colourH2D(EQ.PARAMS.BACKGROUND.colour).g;
   this.bgColBlue = EQ.UTILS.CONVERT.colourH2D(EQ.PARAMS.BACKGROUND.colour).b;
+  // console.log('leaving '+ arguments.callee.name +'()');
+
 };
 
 
 function buildSystemGUI(gui){
+  console.log('in '+ arguments.callee.name +'()');
 
   // Camera controls..
   var camCtrl = gui.addFolder('Camera');
@@ -93,4 +98,5 @@ function buildSystemGUI(gui){
   bgColCtrl.add(controls, 'bgColRed', 0, 255).step(1).name('red');
   bgColCtrl.add(controls, 'bgColGreen', 0, 255).step(1).name('green');
   bgColCtrl.add(controls, 'bgColBlue', 0, 255).step(1).name('blue');
+  console.log('leaving '+ arguments.callee.name +'()');
 }

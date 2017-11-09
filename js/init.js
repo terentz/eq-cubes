@@ -1,8 +1,8 @@
-
+var TEST = {};
 
 
 function init() {
-
+  console.log('in init()');
   var kbAudioContext = new ( window.AudioContext || window.webkitAudioContext ),
       scene, camera, lights=[], controls, grid, renderer,
       fps, step, ts, tsLast,
@@ -16,9 +16,8 @@ function init() {
   step = 0;
   ts = Date.now();
 
-  render();
-
   function render() {
+    console.log('in '+ arguments.callee.name +'()');
 
     // console.log('clearColor: ' + renderer.getClearColor().toString());
 
@@ -37,6 +36,7 @@ function init() {
   /* UPDATES.. */
 
   function updateScene() {
+    console.log('in '+ arguments.callee.name +'()');
     // Cubes..
     grid.updateCells({
                         rotation : {
@@ -75,6 +75,7 @@ function init() {
       oldCol.g !== controls.bgColGreen &&
       oldCol.b !== controls.bgColBlue &&
       renderer.setClearColor(newColour, 1);
+    console.log('leaving '+ arguments.callee.name +'()');
   }
 
   function updateFlags() {
@@ -89,14 +90,17 @@ function init() {
   /* INIT'S... */
 
   function initStats() {
+    TEST.o = arguments.callee;
+    console.log('in '+ arguments.callee.name +'()');
     stats = new Stats();
     stats.setMode(0);
     $("#stats-output").append(stats.domElement);
+    console.log('leaving '+ arguments.callee.name +'()');
     return stats;
   }
 
   function initPiano() {
-
+    console.log('in '+ arguments.callee.name +'()');
     var oscList = [],
         kbBlkKeyDownColour = "#B30B0B",
         kbBlkKeyHoverColour = "#B30B0B",
@@ -106,6 +110,7 @@ function init() {
         kbVolumeControl;
 
     function drawKeyboard() {
+      console.log('in '+ arguments.callee.name +'()');
       var inc,
           midi = 0,
           piaWd = EQ.PARAMS.PIANO.wd,
@@ -182,20 +187,23 @@ function init() {
 
       $('.black-key').css({ height : vw(blkHt), width : vw(blkWd) });
       $('.white-key').css({ width : vw(keyWd) });
+      console.log('leaving '+ arguments.callee.name +'()');
 
     }
 
     function initAudio() {
+      console.log('in '+ arguments.callee.name +'()');
 
       kbWavePicker = $('#kb-waveform-selector')[0];
       kbVolumeControl = $('#kb-volume-ctrl')[0];
       kbMasterGainNode.connect(kbAudioContext.destination);
       kbMasterGainNode.gain.value = kbVolumeControl.value;
       $('#kb-volume-ctrl').change(changeVolume);
+      console.log('leaving '+ arguments.callee.name +'()');
     }
 
     function playNote(event) {
-
+      console.log('in '+ arguments.callee.name +'()');
       let freq = event.target.dataset['freq'],
           osc = kbAudioContext.createOscillator(),
           type = kbWavePicker.options[kbWavePicker.selectedIndex].value;
@@ -205,9 +213,11 @@ function init() {
       osc.frequency.value = freq;
       osc.start();
 
+      console.log('leaving '+ arguments.callee.name +'()');
       return osc;
     }
     function keyPressed(event) {
+      console.log('in '+ arguments.callee.name +'()');
       if ( event.buttons & 1 ) {
         let dataset = event.target.dataset;
         console.log('clicked');
@@ -218,8 +228,10 @@ function init() {
         }
       }
       $('#'+event.target.id).css({ 'background-color': event.data.colour });
+      console.log('leaving '+ arguments.callee.name +'()');
     }
     function keyReleased(event) {
+      console.log('in '+ arguments.callee.name +'()');
       let dataset = event.target.dataset;
 
       if (dataset && dataset["pressed"]) {
@@ -228,6 +240,7 @@ function init() {
         delete dataset["pressed"];
       }
       $('#'+event.target.id).css({ 'background-color': event.data.colour });
+      console.log('leaving '+ arguments.callee.name +'()');
     }
     function changeVolume() {
       kbMasterGainNode.gain.value = kbVolumeControl.value;
@@ -238,11 +251,14 @@ function init() {
 
     drawKeyboard();
     initAudio();
+    console.log('leaving '+ arguments.callee.name +'()');
   }
 
   function initControls(gui) {
+    console.log('in '+ arguments.callee.name +'()');
 
     function buildGUI(gui){
+      console.log('in '+ arguments.callee.name +'()');
 
       // Camera controls..
       var camCtrl = gui.addFolder('Camera');
@@ -342,41 +358,53 @@ function init() {
   }
 
   function initScene() {
+    console.log('in '+ arguments.callee.name +'()');
 
     scene = new THREE.Scene();
     var camArgs;
 
     function initAnimationParameters(){
+      console.log('in '+ arguments.callee.name +'()');
       camArgs = EQ.PARAMS.CAM.args,
       mag = EQ.PARAMS.CUBE.size;
+      console.log('leaving '+ arguments.callee.name +'()');
     }
 
     function initRenderer() {
+      console.log('in '+ arguments.callee.name +'()');
       renderer = new THREE.WebGLRenderer();
       renderer.setClearColor(0xEEEEEE, 1);
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.shadowMapEnabled = true;
+      console.log('leaving '+ arguments.callee.name +'()');
     }
 
     function initAxes() {
+      console.log('in '+ arguments.callee.name +'()');
       var axes = new THREE.AxisHelper(20);
       scene.add(axes);
+      console.log('leaving '+ arguments.callee.name +'()');
     }
 
     function initObjects() {
+      console.log('in '+ arguments.callee.name +'()');
       var geometry = new THREE.BoxGeometry(mag,mag,mag),
           material = new THREE.MeshNormalMaterial();
       grid = new EQ.OBD.Grid({ 'scene':scene, 'geo':geometry, 'mat':material });
+      console.log('leaving '+ arguments.callee.name +'()');
     }
 
     function initLights() {
+      console.log('in '+ arguments.callee.name +'()');
       lights[0] = new THREE.SpotLight( {color : EQ.PARAMS.LIGHT.color} );
       lights[0].position.set(EQ.PARAMS.LIGHT.pos.x, EQ.PARAMS.LIGHT.pos.y, EQ.PARAMS.LIGHT.pos.z);
       lights[0].castShadow = true;
       scene.add(lights[0]);
+      console.log('leaving '+ arguments.callee.name +'()');
     }
 
     function initCamera() {
+      console.log('in '+ arguments.callee.name +'()');
       var aspect = window.innerWidth / window.innerHeight;
       camera = new THREE.PerspectiveCamera(
         camArgs.fov,
@@ -388,6 +416,7 @@ function init() {
       camera.position.y = EQ.PARAMS.CAM.args.initPos.y;
       camera.position.z = EQ.PARAMS.CAM.args.initPos.z;
       camera.lookAt(scene.position);
+      console.log('leaving '+ arguments.callee.name +'()');
     }
 
     initAnimationParameters();
@@ -399,6 +428,9 @@ function init() {
 
     // Add the scene to the page...
     $("#WebGL-output").append(renderer.domElement);
+    console.log('leaving '+ arguments.callee.name +'()');
+
   }
 
+  render();
 }
